@@ -87,7 +87,7 @@ License:	ATI
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
-Provides:	xorg-driver-vide-fglrx(kernel)
+Provides:	xorg-driver-video-fglrx(kernel)
 
 %description -n kernel-video-firegl
 ATI kernel module for FireGL support.
