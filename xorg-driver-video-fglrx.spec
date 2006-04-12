@@ -27,11 +27,11 @@
 %define		arch_dir	x86_64
 %endif
 
+%define		_rel	1
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
 Version:	8.22.5
-%define		_rel	1
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
@@ -48,8 +48,7 @@ Patch1:		firegl-panel-ugliness.patch
 Patch2:		%{name}-kh.patch
 Patch3:		%{name}-viak8t.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
-BuildRequires:	cpio
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 2.6.14}
+%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.14}
 %{?with_userspace:BuildRequires:	qt-devel}
 BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	xorg-lib-libXmu-devel
@@ -147,11 +146,11 @@ for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}
 	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
 		exit 1
 	fi
-        install -d o/include/linux
-        ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-        ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-        ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-        %{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
+		install -d o/include/linux
+		ln -sf %{_kernelsrcdir}/config-$cfg o/.config
+		ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
+		ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
+		%{__make} -C %{_kernelsrcdir} O=$PWD/o prepare scripts
 	%{__make} -C %{_kernelsrcdir} clean \
 		RCS_FIND_IGNORE="-name '*.ko' -o" \
 		M=$PWD O=$PWD/o \
@@ -249,8 +248,8 @@ rm -rf $RPM_BUILD_ROOT
 # -devel
 #%attr(755,root,root) %{_libdir}/libfglrx_gamma.so
 #%{_includedir}/X11/include/libfglrx_gamma.h
-#/usr/include/GL/glATI.h
-#/usr/include/GL/glxATI.h
+#%{_includedir}/GL/glATI.h
+#%{_includedir}/GL/glxATI.h
 
 # -static
 #%{_libdir}/libfglrx_gamma.a
