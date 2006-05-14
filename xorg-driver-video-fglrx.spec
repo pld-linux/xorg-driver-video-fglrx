@@ -27,21 +27,21 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		_rel	1
+%define		_rel	0.1
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.22.5
+Version:	8.24.8
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 %if %{need_x86}
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-i386.run
-# Source0-md5:	283eb8b53dbd0887fff3277d4bf0b3f9
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.run
+# Source0-md5:	03495fe2f7d54eb9cb0d230940194440
 %endif
 %if %{need_amd64}
 Source1:	http://dlmdownloads.ati.com/drivers/linux/64bit/ati-driver-installer-%{version}-x86_64.run
-# Source1-md5:	a24571ecb45b2a26092ef103d8eecefd
+# Source1-md5:	347e818a4eb8fb11da2aa3ebcb31afd4
 %endif
 Patch0:		firegl-panel.patch
 Patch1:		firegl-panel-ugliness.patch
