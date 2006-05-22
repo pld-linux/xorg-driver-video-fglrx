@@ -1,4 +1,8 @@
 #
+# BLOCKER:
+#		ATI fglrx drivers + kernels >= 2.6.16-rc4
+#		http://forums.gentoo.org/viewtopic-t-438271.html
+#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
