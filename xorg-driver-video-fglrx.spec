@@ -1,8 +1,4 @@
 #
-# BLOCKER:
-#		ATI fglrx drivers + kernels >= 2.6.16-rc4
-#		http://forums.gentoo.org/viewtopic-t-438271.html
-#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -35,17 +31,17 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.24.8
+Version:	8.25.18
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 %if %{need_x86}
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.run
-# Source0-md5:	03495fe2f7d54eb9cb0d230940194440
+# Source0-md5:	37ea9a8fedf514d3ebdb266d4cb6cd4a
 %endif
 %if %{need_amd64}
 Source1:	http://dlmdownloads.ati.com/drivers/linux/64bit/ati-driver-installer-%{version}-x86_64.run
-# Source1-md5:	347e818a4eb8fb11da2aa3ebcb31afd4
+# Source1-md5:	875c80fc3ae5fc55b2a8f8c4a9437a35
 %endif
 Patch0:		firegl-panel.patch
 Patch1:		firegl-panel-ugliness.patch
