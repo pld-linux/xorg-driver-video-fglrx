@@ -48,6 +48,7 @@ Patch1:		firegl-panel-ugliness.patch
 Patch2:		%{name}-kh.patch
 Patch3:		%{name}-viak8t.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
+%{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.14}
 %{?with_userspace:BuildRequires:	qt-devel}
 BuildRequires:	rpmbuild(macros) >= 1.213
@@ -190,7 +191,6 @@ cd -
 
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
-install -d $RPM_BUILD_ROOT%{_prefix}/X11R6/%{_lib}/modules/dri
 
 install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig} \
 	$RPM_BUILD_ROOT%{_bindir}
@@ -201,8 +201,6 @@ cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 ln -sf libGL.so.1.* $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
-
-ln -sf %{_libdir}/xorg/modules/dri/fglrx_dri.so $RPM_BUILD_ROOT%{_prefix}/X11R6/%{_lib}/modules/dri/
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
 install common%{_prefix}/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
@@ -242,8 +240,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
-
-%{_prefix}/X11R6
 
 # -devel
 #%attr(755,root,root) %{_libdir}/libfglrx_gamma.so
