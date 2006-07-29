@@ -7,9 +7,7 @@
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_without	incall		# include all sources in srpm
 
-%define		_min_eq_x11	1:7.0.0
-%define		_max_x11	1:7.0.0
-%define		x11ver		x690
+%define		x11ver		x710
 
 %if %{without kernel}
 %undefine with_dist_kernel
@@ -31,17 +29,17 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.25.18
+Version:	8.27.10
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 %if %{need_x86}
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.run
-# Source0-md5:	37ea9a8fedf514d3ebdb266d4cb6cd4a
+# Source0-md5:	72f69477c66d8b2d1a580c7885afa892
 %endif
 %if %{need_amd64}
 Source1:	http://dlmdownloads.ati.com/drivers/linux/64bit/ati-driver-installer-%{version}-x86_64.run
-# Source1-md5:	875c80fc3ae5fc55b2a8f8c4a9437a35
+# Source1-md5:	4cc78c0fc864fd2b3205cee5f866f3d7
 %endif
 Patch0:		firegl-panel.patch
 Patch1:		firegl-panel-ugliness.patch
@@ -135,7 +133,7 @@ cd -
 
 install -d common%{_prefix}/{%{_lib},bin}
 cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/%{_lib}/* common%{_prefix}/%{_lib}
-cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/bin/* common%{_bindir}
+#cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}%{_prefix}/X11R6/%{_lib}/* common%{_prefix}/%{_lib}
 cp -r arch/%{arch_dir}%{_prefix}/X11R6/bin/* common%{_bindir}
 
@@ -191,6 +189,7 @@ cd -
 
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+install -d $RPM_BUILD_ROOT%{_prefix}/X11R6/%{_lib}/modules/dri
 
 install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig} \
 	$RPM_BUILD_ROOT%{_bindir}
@@ -201,6 +200,8 @@ cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 ln -sf libGL.so.1.* $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
+
+ln -sf %{_libdir}/xorg/modules/dri/fglrx_dri.so $RPM_BUILD_ROOT%{_prefix}/X11R6/%{_lib}/modules/dri/
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
 install common%{_prefix}/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
@@ -235,11 +236,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
+%attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
 
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/atiogl_a_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
+
+%{_prefix}/X11R6
 
 # -devel
 #%attr(755,root,root) %{_libdir}/libfglrx_gamma.so
