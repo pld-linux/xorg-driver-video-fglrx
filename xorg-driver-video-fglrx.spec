@@ -69,22 +69,34 @@ dostarcza sterowniki obs³uguj±ce wy¶wietlanie 2D oraz sprzêtowo
 akcelerowany OpenGL.
 
 %package devel
-Summary:	Header files and libraries for development for the ATI proprietary driver for ATI Radeon graphic cards
+Summary:	Header files for development for the ATI Radeon cards proprietary driver
+Summary(pl):	Pliki nag³ówkowe do programowania z u¿yciem w³asno¶ciowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
+# or more?
+Requires:	xorg-proto-glproto-devel
 
 %description devel
-Header files and libraries for development for the ATI proprietary
-driver for ATI Radeon graphic cards.
+Header files for development for the ATI proprietary driver for
+ATI Radeon graphic cards.
+
+%description devel -l pl
+Pliki nag³ówkowe do programowania z u¿yciem w³asno¶ciowego sterownika
+ATI dla kart graficznych Radeon.
 
 %package static
-Summary:	Static libraries for development for the ATI proprietary driver for ATI Radeon graphic cards
+Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
+Summary(pl):	Biblioteki statyczne do programowania z u¿yciem w³asno¶ciowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static libraries for development for the ATI proprietary driver for
 ATI Radeon graphic cards.
+
+%description static -l pl
+Biblioteki statyczne do programowania z u¿yciem w³asno¶ciowego
+sterownika ATI dla kart graficznych ATI Radeon.
 
 %package -n kernel-video-firegl
 Summary:	ATI kernel module for FireGL support
@@ -250,10 +262,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libfglrx_*so
 %{_includedir}/GL/glATI.h
 %{_includedir}/GL/glxATI.h
 %{_includedir}/X11/extensions/fglrx_gamma.h
-%attr(755,root,root) %{_libdir}/libfglrx_*so
 
 %files static
 %defattr(644,root,root,755)
