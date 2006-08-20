@@ -1,4 +1,3 @@
-#  $Revision: 1.11 $, $Date: 2006-08-19 12:27:32 $
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -21,11 +20,11 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		_rel	0.1
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
 Version:	8.28.8
+%define		_rel	0.2
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
@@ -68,6 +67,24 @@ Sterowniki do kart graficznych ATI Radeon 8500, 9700, Mobility M9 oraz
 graficznych akceleratorów FireGL 8700/8800, E1, Z1/X1. Pakiet
 dostarcza sterowniki obs³uguj±ce wy¶wietlanie 2D oraz sprzêtowo
 akcelerowany OpenGL.
+
+%package devel
+Summary:	Header files and libraries for development for the ATI proprietary driver for ATI Radeon graphic cards
+Group:		X11/Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description devel
+Header files and libraries for development for the ATI proprietary
+driver for ATI Radeon graphic cards.
+
+%package static
+Summary:	Static libraries for development for the ATI proprietary driver for ATI Radeon graphic cards
+Group:		X11/Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static libraries for development for the ATI proprietary driver for
+ATI Radeon graphic cards.
 
 %package -n kernel-video-firegl
 Summary:	ATI kernel module for FireGL support
@@ -118,9 +135,8 @@ cd common
 cd -
 
 install -d common%{_prefix}/{%{_lib},bin}
-cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/%{_lib}/* common%{_prefix}/%{_lib}
-#cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/bin/* common%{_bindir}
-cp -r arch/%{arch_dir}%{_prefix}/X11R6/%{_lib}/* common%{_prefix}/%{_lib}
+cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/%{_lib}/* common%{_libdir}
+cp -r arch/%{arch_dir}%{_prefix}/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}%{_prefix}/X11R6/bin/* common%{_bindir}
 
 %build
@@ -153,7 +169,7 @@ cd -
 	C="%{__cc}" \
 	CC="%{__cxx}" \
 	CCFLAGS="%{rpmcflags} -DFGLRX_USE_XEXTENSIONS" \
-	MK_QTDIR=/usr \
+	MK_QTDIR=%{_prefix} \
 	LIBQT_DYN=qt-mt
 %endif
 
@@ -174,8 +190,7 @@ cd -
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
-install -d $RPM_BUILD_ROOT%{_prefix}/X11R6/%{_lib}/modules/dri
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/env.d,%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
 
 install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig} \
 	$RPM_BUILD_ROOT%{_bindir}
@@ -185,12 +200,16 @@ cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
-ln -sf libGL.so.1.* $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
-
-ln -sf %{_libdir}/xorg/modules/dri/fglrx_dri.so $RPM_BUILD_ROOT%{_prefix}/X11R6/%{_lib}/modules/dri/
+ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
 install common%{_prefix}/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
+echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
+
+cd $RPM_BUILD_ROOT%{_libdir}
+for f in libfglrx_dm libfglrx_gamma libfglrx_pp libfglrx_tvout; do
+	ln -s $f.so.* $f.so
+done
 %endif
 
 %clean
@@ -215,6 +234,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc ATI_LICENSE.TXT common%{_docdir}/fglrx/*.html common%{_docdir}/fglrx/articles common%{_docdir}/fglrx/release-notes common%{_docdir}/fglrx/user-manual
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/libGL.so.1
@@ -223,23 +243,22 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
-
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/atiogl_a_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 
-%{_prefix}/X11R6
+%files devel
+%defattr(644,root,root,755)
+%{_includedir}/GL/glATI.h
+%{_includedir}/GL/glxATI.h
+%{_includedir}/X11/extensions/fglrx_gamma.h
+%attr(755,root,root) %{_libdir}/libfglrx_*so
 
-# -devel
-#%attr(755,root,root) %{_libdir}/libfglrx_gamma.so
-#%{_includedir}/X11/include/libfglrx_gamma.h
-#%{_includedir}/GL/glATI.h
-#%{_includedir}/GL/glxATI.h
-
-# -static
-#%{_libdir}/libfglrx_gamma.a
-#%{_libdir}/libfglrx_pp.a
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/libatixutil.a
+%{_libdir}/libfglrx_*.a
 %endif
 
 %if %{with kernel}
