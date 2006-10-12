@@ -45,6 +45,7 @@ BuildRequires:	xorg-proto-recordproto-devel
 BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 %{?with_kernel:Requires:	xorg-driver-video-fglrx(kernel)}
+Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
 Provides:	OpenGL = 2.0
 Obsoletes:	Mesa
