@@ -36,9 +36,9 @@ Patch2:		%{name}-kh.patch
 Patch3:		%{name}-viak8t.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
-%{?with_dist_kernel:BuildRequires:	kernel-module-build >= 3:2.6.14}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.14}
 %{?with_userspace:BuildRequires:	qt-devel}
-BuildRequires:	rpmbuild(macros) >= 1.213
+BuildRequires:	rpmbuild(macros) >= 1.326
 BuildRequires:	xorg-lib-libXmu-devel
 BuildRequires:	xorg-lib-libXxf86vm-devel
 BuildRequires:	xorg-proto-recordproto-devel
@@ -99,7 +99,7 @@ ATI Radeon graphic cards.
 Biblioteki statyczne do programowania z u¿yciem w³asno¶ciowego
 sterownika ATI dla kart graficznych ATI Radeon.
 
-%package -n kernel-video-firegl
+%package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
 Summary(pl):	Modu³ j±dra oferuj±cy wsparcie dla ATI FireGL
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -109,13 +109,13 @@ Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 Provides:	xorg-driver-video-fglrx(kernel)
 
-%description -n kernel-video-firegl
+%description -n kernel%{_alt_kernel}-video-firegl
 ATI kernel module for FireGL support.
 
-%description -n kernel-video-firegl -l pl
+%description -n kernel%{_alt_kernel}-video-firegl -l pl
 Modu³ j±dra oferuj±cy wsparcie dla ATI FireGL.
 
-%package -n kernel-smp-video-firegl
+%package -n kernel%{_alt_kernel}-smp-video-firegl
 Summary:	ATI kernel module for FireGL support
 Summary(pl):	Modu³ j±dra oferuj±cy wsparcie dla ATI FireGL
 Release:	%{_rel}@%{_kernel_ver_str}
@@ -125,10 +125,10 @@ Group:		Base/Kernel
 Requires(post,postun):	/sbin/depmod
 Provides:	xorg-driver-video-fglrx(kernel)
 
-%description -n kernel-smp-video-firegl
+%description -n kernel%{_alt_kernel}-smp-video-firegl
 ATI kernel module for FireGL support.
 
-%description -n kernel-smp-video-firegl -l pl
+%description -n kernel%{_alt_kernel}-smp-video-firegl -l pl
 Modu³ j±dra oferuj±cy wsparcie dla ATI FireGL.
 
 %prep
@@ -156,24 +156,7 @@ cp -r arch/%{arch_dir}%{_prefix}/X11R6/bin/* common%{_bindir}
 %if %{with kernel}
 cd common/lib/modules/fglrx/build_mod
 cp -f 2.6.x/Makefile .
-for cfg in %{?with_dist_kernel:%{?with_smp:smp} up}%{!?with_dist_kernel:nondist}; do
-	if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-		exit 1
-	fi
-		install -d o/include/linux
-		ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-		ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-		ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-		%{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-	%{__make} -C %{_kernelsrcdir} clean \
-		RCS_FIND_IGNORE="-name '*.ko' -o" \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-	%{__make} -C %{_kernelsrcdir} modules \
-		M=$PWD O=$PWD/o \
-		%{?with_verbose:V=1}
-	mv fglrx{,-$cfg}.ko
-done
+%build_kernel_modules -m fglrx
 cd -
 %endif
 
@@ -190,16 +173,7 @@ cd -
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-cd common/lib/modules/fglrx/build_mod
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
-
-install fglrx-%{?with_dist_kernel:up}%{!?with_dist_kernel:nondist}.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/fglrx.ko
-%if %{with smp} && %{with dist_kernel}
-install fglrx-smp.ko \
-	$RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/fglrx.ko
-%endif
-cd -
+%install_kernel_modules -m common/lib/modules/fglrx/build_mod/fglrx -d misc
 %endif
 
 %if %{with userspace}
@@ -231,16 +205,16 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
-%post	-n kernel-video-firegl
+%post	-n kernel%{_alt_kernel}-video-firegl
 %depmod %{_kernel_ver}
 
-%postun -n kernel-video-firegl
+%postun -n kernel%{_alt_kernel}-video-firegl
 %depmod %{_kernel_ver}
 
-%post	-n kernel-smp-video-firegl
+%post	-n kernel%{_alt_kernel}-smp-video-firegl
 %depmod %{_kernel_ver}smp
 
-%postun -n kernel-smp-video-firegl
+%postun -n kernel%{_alt_kernel}-smp-video-firegl
 %depmod %{_kernel_ver}smp
 
 %if %{with userspace}
@@ -275,12 +249,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
-%files -n kernel-video-firegl
+%files -n kernel%{_alt_kernel}-video-firegl
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*.ko*
 
 %if %{with smp} && %{with dist_kernel}
-%files -n kernel-smp-video-firegl
+%files -n kernel%{_alt_kernel}-smp-video-firegl
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}smp/misc/*.ko*
 %endif
