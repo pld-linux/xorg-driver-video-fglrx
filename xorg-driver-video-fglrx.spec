@@ -8,7 +8,7 @@
 
 %define		x11ver		x710
 
-%if %{without kernel}
+%if !%{with kernel}
 %undefine with_dist_kernel
 %endif
 
