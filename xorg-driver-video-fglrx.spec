@@ -49,10 +49,10 @@ Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
 Provides:	OpenGL = 2.0
 Obsoletes:	Mesa
-Obsoletes:	X11-OpenGL-libGL
-Obsoletes:	X11-driver-firegl
-Obsoletes:	XFree86-OpenGL-libGL
-Obsoletes:	XFree86-driver-firegl
+Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
+Obsoletes:	X11-driver-firegl < 1:7.0.0
+Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
+Obsoletes:	XFree86-driver-firegl < 1:7.0.0
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
