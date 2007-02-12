@@ -21,7 +21,7 @@
 %endif
 
 Summary:	Linux Drivers for ATI graphics accelerators
-Summary(pl):	Sterowniki do akceleratorÛw graficznych ATI
+Summary(pl.UTF-8):   Sterowniki do akcelerator√≥w graficznych ATI
 Name:		xorg-driver-video-fglrx
 Version:	8.33.6
 %define		_rel	1
@@ -65,15 +65,15 @@ Display driver files for the ATI Radeon 8500, 9700, Mobility M9 and
 the FireGL 8700/8800, E1, Z1/X1 graphics accelerators. This package
 provides 2D display drivers and hardware accelerated OpenGL.
 
-%description -l pl
+%description -l pl.UTF-8
 Sterowniki do kart graficznych ATI Radeon 8500, 9700, Mobility M9 oraz
-graficznych akceleratorÛw FireGL 8700/8800, E1, Z1/X1. Pakiet
-dostarcza sterowniki obs≥uguj±ce wy∂wietlanie 2D oraz sprzÍtowo
+graficznych akcelerator√≥w FireGL 8700/8800, E1, Z1/X1. Pakiet
+dostarcza sterowniki obs≈ÇugujƒÖce wy≈õwietlanie 2D oraz sprzƒôtowo
 akcelerowany OpenGL.
 
 %package devel
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
-Summary(pl):	Pliki nag≥Ûwkowe do programowania z uøyciem w≥asno∂ciowego sterownika dla kart ATI Radeon
+Summary(pl.UTF-8):   Pliki nag≈Ç√≥wkowe do programowania z u≈ºyciem w≈Çasno≈õciowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 # or more?
@@ -83,13 +83,13 @@ Requires:	xorg-proto-glproto-devel
 Header files for development for the ATI proprietary driver for
 ATI Radeon graphic cards.
 
-%description devel -l pl
-Pliki nag≥Ûwkowe do programowania z uøyciem w≥asno∂ciowego sterownika
+%description devel -l pl.UTF-8
+Pliki nag≈Ç√≥wkowe do programowania z u≈ºyciem w≈Çasno≈õciowego sterownika
 ATI dla kart graficznych Radeon.
 
 %package static
 Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
-Summary(pl):	Biblioteki statyczne do programowania z uøyciem w≥asno∂ciowego sterownika dla kart ATI Radeon
+Summary(pl.UTF-8):   Biblioteki statyczne do programowania z u≈ºyciem w≈Çasno≈õciowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -97,13 +97,13 @@ Requires:	%{name}-devel = %{version}-%{release}
 Static libraries for development for the ATI proprietary driver for
 ATI Radeon graphic cards.
 
-%description static -l pl
-Biblioteki statyczne do programowania z uøyciem w≥asno∂ciowego
+%description static -l pl.UTF-8
+Biblioteki statyczne do programowania z u≈ºyciem w≈Çasno≈õciowego
 sterownika ATI dla kart graficznych ATI Radeon.
 
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
-Summary(pl):	Modu≥ j±dra oferuj±cy wsparcie dla ATI FireGL
+Summary(pl.UTF-8):   Modu≈Ç jƒÖdra oferujƒÖcy wsparcie dla ATI FireGL
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
@@ -114,12 +114,12 @@ Provides:	xorg-driver-video-fglrx(kernel)
 %description -n kernel%{_alt_kernel}-video-firegl
 ATI kernel module for FireGL support.
 
-%description -n kernel%{_alt_kernel}-video-firegl -l pl
-Modu≥ j±dra oferuj±cy wsparcie dla ATI FireGL.
+%description -n kernel%{_alt_kernel}-video-firegl -l pl.UTF-8
+Modu≈Ç jƒÖdra oferujƒÖcy wsparcie dla ATI FireGL.
 
 %package -n kernel%{_alt_kernel}-smp-video-firegl
 Summary:	ATI kernel module for FireGL support
-Summary(pl):	Modu≥ j±dra oferuj±cy wsparcie dla ATI FireGL
+Summary(pl.UTF-8):   Modu≈Ç jƒÖdra oferujƒÖcy wsparcie dla ATI FireGL
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
@@ -130,8 +130,8 @@ Provides:	xorg-driver-video-fglrx(kernel)
 %description -n kernel%{_alt_kernel}-smp-video-firegl
 ATI kernel module for FireGL support.
 
-%description -n kernel%{_alt_kernel}-smp-video-firegl -l pl
-Modu≥ j±dra oferuj±cy wsparcie dla ATI FireGL.
+%description -n kernel%{_alt_kernel}-smp-video-firegl -l pl.UTF-8
+Modu≈Ç jƒÖdra oferujƒÖcy wsparcie dla ATI FireGL.
 
 %prep
 %setup -q -c -T
