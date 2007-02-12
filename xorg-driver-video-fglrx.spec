@@ -21,7 +21,7 @@
 %endif
 
 Summary:	Linux Drivers for ATI graphics accelerators
-Summary(pl.UTF-8):   Sterowniki do akceleratorów graficznych ATI
+Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
 Version:	8.33.6
 %define		_rel	1
@@ -73,7 +73,7 @@ akcelerowany OpenGL.
 
 %package devel
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
-Summary(pl.UTF-8):   Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
+Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 # or more?
@@ -89,7 +89,7 @@ ATI dla kart graficznych Radeon.
 
 %package static
 Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
-Summary(pl.UTF-8):   Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
+Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
@@ -103,7 +103,7 @@ sterownika ATI dla kart graficznych ATI Radeon.
 
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
-Summary(pl.UTF-8):   Moduł jądra oferujący wsparcie dla ATI FireGL
+Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
@@ -119,7 +119,7 @@ Moduł jądra oferujący wsparcie dla ATI FireGL.
 
 %package -n kernel%{_alt_kernel}-smp-video-firegl
 Summary:	ATI kernel module for FireGL support
-Summary(pl.UTF-8):   Moduł jądra oferujący wsparcie dla ATI FireGL
+Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
