@@ -49,6 +49,7 @@ Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
 Provides:	OpenGL = 2.0
 Obsoletes:	Mesa
+Obsoletes:	Mesa-libGL
 Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
