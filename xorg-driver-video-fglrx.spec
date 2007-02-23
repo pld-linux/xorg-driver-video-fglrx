@@ -3,6 +3,7 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	smp		# don't build SMP module
+%bcond_without	up		# don't build UP module
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 
@@ -23,17 +24,19 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.33.6
+Version:	8.34.8
 %define		_rel	1
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
-# Source0-md5:	5fbd42d666d467a904acbaeb600c1d5a
+# Source0-md5:	44eda48613542b955a63bd6af2ccc6ce
 Patch0:		firegl-panel.patch
 Patch1:		firegl-panel-ugliness.patch
 Patch2:		%{name}-kh.patch
 Patch3:		%{name}-viak8t.patch
+Patch4:		%{name}-2.6.20-restore_syscalls.patch
+Patch5:		%{name}-2.6.20-init_work_macro.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.14}
@@ -149,6 +152,8 @@ cd common
 %{?with_dist_kernel:%patch2 -p1}
 %patch3 -p1
 cd -
+%patch4 -p1
+%patch5 -p1
 
 install -d common%{_prefix}/{%{_lib},bin}
 cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/%{_lib}/* common%{_libdir}
@@ -233,7 +238,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
-%attr(755,root,root) %{_libdir}/xorg/modules/dri/atiogl_a_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
@@ -252,9 +256,11 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with kernel}
+%if %{with up}
 %files -n kernel%{_alt_kernel}-video-firegl
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*.ko*
+%endif
 
 %if %{with smp} && %{with dist_kernel}
 %files -n kernel%{_alt_kernel}-smp-video-firegl
