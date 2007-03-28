@@ -1,0 +1,42 @@
+--- xorg-driver-video-fglrx-8.35.5/common/lib/modules/fglrx/build_mod/firegl_public.c	2007-03-29 00:31:40.527782600 +0200
++++ xorg-driver-video-fglrx-8.35.5/common/lib/modules/fglrx/build_mod/firegl_public.c~	2007-03-29 00:28:43.753265243 +0200
+@@ -172,6 +172,7 @@
+ #endif
+ 
+ #include <linux/kmod.h>
++#include <linux/freezer.h>
+ 
+ // To enable DBG_* macros set this variable to nonzero
+ #define DRM_DEBUG_CODE 0
+@@ -5060,28 +5061,13 @@
+     unsigned int ret = 0;
+     kasSlabCache_t* slabcache_obj = (kasSlabCache_t*)hSlabCache;
+ 
+-    DBG_ENTER("0x%08X", hSlabCache);
+-
+-    if (!(slabcache_obj->cache))
+-    {
+-        DBG_ERROR("slab object '%s' is not initialized");
+-        DBG_LEAVE("0");
+-        return 0;
+-    }
+-
+-    DBG_TRACE("destroying slab object '%s'", slabcache_obj->name);
+-
+-    if (kmem_cache_destroy(slabcache_obj->cache) == 0)
++    if (slabcache_obj->cache)
+     {
+-        ret = 1;
++        kmem_cache_destroy(slabcache_obj->cache);
+         slabcache_obj->cache = NULL;
+-    }
+-    else
+-    {
+-        DBG_ERROR("destroying failed");
++        ret = 1;
+     }
+ 
+-    DBG_LEAVE("%d", ret);
+     return ret;
+ }
+ 
