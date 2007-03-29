@@ -45,7 +45,6 @@ BuildRequires:	xorg-lib-libXxf86vm-devel
 BuildRequires:	xorg-proto-recordproto-devel
 BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
-%{?with_kernel:Requires:	xorg-driver-video-fglrx(kernel)}
 Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
 Provides:	OpenGL = 2.0
@@ -111,7 +110,6 @@ License:	ATI
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
-Provides:	xorg-driver-video-fglrx(kernel)
 
 %description -n kernel%{_alt_kernel}-video-firegl
 ATI kernel module for FireGL support.
