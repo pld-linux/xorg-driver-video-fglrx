@@ -37,7 +37,7 @@ Patch4:		%{name}-2.6.20-restore_syscalls.patch
 Patch5:		%{name}-kmem_cache_destroy.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.14}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %{?with_userspace:BuildRequires:	qt-devel}
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	xorg-lib-libXmu-devel
