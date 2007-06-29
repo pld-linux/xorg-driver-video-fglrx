@@ -22,17 +22,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.37.6
-%define		_rel	2
+Version:	8.38.6
+%define		_rel	1
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
-# Source0-md5:	ebad4685199a9b3704237bc165de00d4
-Patch0:		firegl-panel.patch
-Patch1:		firegl-panel-ugliness.patch
-Patch2:		%{name}-kh.patch
-Patch3:		%{name}-viak8t.patch
+# Source0-md5:	750eb0b5fa996d40b3ca52542c78154b
+Patch0:		%{name}-kh.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -122,13 +119,8 @@ sh %{SOURCE0} --extract .
 
 cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
-install -d panel_src
-tar -xzf common/usr/src/ati/fglrx_panel_sources.tgz -C panel_src
-%patch0 -p1
-%patch1 -p1
 cd common
-%{?with_dist_kernel:%patch2 -p1}
-%patch3 -p1
+%{?with_dist_kernel:%patch0 -p1}
 cd -
 
 install -d common%{_prefix}/{%{_lib},bin}
@@ -144,15 +136,6 @@ cp -f 2.6.x/Makefile .
 cd -
 %endif
 
-%if %{with userspace}
-%{__make} -C panel_src \
-	C="%{__cc}" \
-	CC="%{__cxx}" \
-	CCFLAGS="%{rpmcflags} -DFGLRX_USE_XEXTENSIONS" \
-	MK_QTDIR=%{_prefix} \
-	LIBQT_DYN=qt-mt
-%endif
-
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -163,10 +146,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/env.d,%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
 
-install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig} \
+install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma} \
 	$RPM_BUILD_ROOT%{_bindir}
-install panel_src/fireglcontrol.qt3.gcc%(gcc -dumpversion) \
-	$RPM_BUILD_ROOT%{_bindir}/fireglcontrol
 cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 
