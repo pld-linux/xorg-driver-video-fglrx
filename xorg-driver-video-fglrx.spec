@@ -22,13 +22,13 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.38.6
+Version:	8.39.4
 %define		_rel	1
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
-# Source0-md5:	750eb0b5fa996d40b3ca52542c78154b
+# Source0-md5:	0d04bccfc0baf8defafa8f66b53a0ef6
 Patch0:		%{name}-kh.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
@@ -144,12 +144,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/env.d,%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
 
 install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma} \
 	$RPM_BUILD_ROOT%{_bindir}
 cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
+cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
@@ -180,6 +181,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc ATI_LICENSE.TXT common%{_docdir}/fglrx/*.html common%{_docdir}/fglrx/articles common%{_docdir}/fglrx/release-notes common%{_docdir}/fglrx/user-manual
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
