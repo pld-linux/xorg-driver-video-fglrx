@@ -12,7 +12,7 @@
 %endif
 
 %ifarch %{ix86}
-%define		arch_sufix	""
+%define		arch_sufix	%{nil}
 %define		arch_dir	x86
 %else
 %define		arch_sufix	_64a
@@ -124,9 +124,9 @@ cd common
 cd -
 
 install -d common%{_prefix}/{%{_lib},bin}
-cp -r %{x11ver}%{arch_sufix}%{_prefix}/X11R6/%{_lib}/* common%{_libdir}
-cp -r arch/%{arch_dir}%{_prefix}/X11R6/%{_lib}/* common%{_libdir}
-cp -r arch/%{arch_dir}%{_prefix}/X11R6/bin/* common%{_bindir}
+cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
+cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
+cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 
 %build
 %if %{with kernel}
@@ -157,7 +157,7 @@ ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
-install common%{_prefix}/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
+install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 
 cd $RPM_BUILD_ROOT%{_libdir}
@@ -188,7 +188,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
-%attr(755,root,root) %{_libdir}/libGL.so.1
+%attr(755,root,root) %ghost %{_libdir}/libGL.so.1
 %attr(755,root,root) %{_libdir}/libGL.so
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
@@ -198,18 +198,24 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
+%attr(755,root,root) %{_libdir}/xorg/modules/esut.a
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libfglrx_*so
+%attr(755,root,root) %{_libdir}/libfglrx_dm.so
+%attr(755,root,root) %{_libdir}/libfglrx_gamma.so
+%attr(755,root,root) %{_libdir}/libfglrx_pp.so
+%attr(755,root,root) %{_libdir}/libfglrx_tvout.so
 %{_includedir}/GL/glATI.h
 %{_includedir}/GL/glxATI.h
 %{_includedir}/X11/extensions/fglrx_gamma.h
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libfglrx_*.a
-%{_libdir}/xorg/modules/esut.a
+%{_libdir}/libfglrx_dm.a
+%{_libdir}/libfglrx_gamma.a
+%{_libdir}/libfglrx_pp.a
+%{_libdir}/libfglrx_tvout.a
 %endif
 
 %if %{with kernel}
