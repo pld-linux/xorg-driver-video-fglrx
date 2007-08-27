@@ -43,6 +43,7 @@ BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
 Provides:	OpenGL = 2.0
+Provides:	OpenGL-GLX = 1.4
 Obsoletes:	Mesa
 Obsoletes:	Mesa-libGL
 Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
