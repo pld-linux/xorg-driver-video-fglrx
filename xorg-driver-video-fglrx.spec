@@ -23,7 +23,7 @@ Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
 Version:	8.40.4
-%define		_rel	2
+%define		_rel	3
 Release:	%{_rel}
 License:	ATI Binary (parts are GPL)
 Group:		X11
@@ -42,6 +42,7 @@ BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
+Requires:	xorg-xserver-server(videodrv-abi) = 1.2
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
 Obsoletes:	Mesa
