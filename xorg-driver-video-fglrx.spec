@@ -45,8 +45,6 @@ Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) = 1.2
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
-Obsoletes:	Mesa
-Obsoletes:	Mesa-libGL
 Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
@@ -193,6 +191,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %attr(755,root,root) %{_bindir}/*
+%dir %{_libdir}/fglrx
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libGL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
