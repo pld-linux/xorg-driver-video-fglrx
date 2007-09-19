@@ -146,25 +146,28 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d,ld.so.conf.d},%{_bindir},%{_libdir}/{xorg/modules,fglrx},%{_includedir}/{X11/extensions,GL}}
 
 install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma} \
 	$RPM_BUILD_ROOT%{_bindir}
-cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
+cp -r common%{_libdir}/lib*.a $RPM_BUILD_ROOT%{_libdir}
+cp -r common%{_libdir}/lib*.so* $RPM_BUILD_ROOT%{_libdir}/fglrx
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
 
-ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
-ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
+ln -sf fglrx/libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
+ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/fglrx/libGL.so.1
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
 install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 
+echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
+
 cd $RPM_BUILD_ROOT%{_libdir}
 for f in libfglrx_dm libfglrx_gamma libfglrx_pp libfglrx_tvout; do
-	ln -s $f.so.* $f.so
+	ln -s fglrx/$f.so.* $f.so
 done
 %endif
 
@@ -188,14 +191,14 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/libGL.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libGL.so.1
-%attr(755,root,root) %{_libdir}/libGL.so
-%attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
-%attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
-%attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
-%attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/fglrx/libGL.so.1
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
@@ -204,6 +207,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libGL.so
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so
