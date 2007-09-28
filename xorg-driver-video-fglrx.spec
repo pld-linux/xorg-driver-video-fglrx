@@ -4,6 +4,7 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
+%bcond_with	multigl		# package libGL in a way allowing concurrent install with nvidia/fglrx drivers
 
 %define		x11ver		x710
 
@@ -24,7 +25,7 @@ Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
 Version:	8.40.4
 %define		_rel	3
-Release:	%{_rel}
+Release:	%{_rel}%{?with_multigl:.mgl}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
@@ -45,8 +46,10 @@ Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) = 1.2
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
+%if !%{with multigl}
 Obsoletes:	Mesa
 Obsoletes:	Mesa-libGL
+%endif
 Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
@@ -150,13 +153,26 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_libdir}/xorg
 
 install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma} \
 	$RPM_BUILD_ROOT%{_bindir}
-cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
 
+%if %{with multigl}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/ld.so.conf.d,%{_libdir}/fglrx}
+
+echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
+
+cp -r common%{_libdir}/lib*.a $RPM_BUILD_ROOT%{_libdir}
+cp -r common%{_libdir}/lib*.so* $RPM_BUILD_ROOT%{_libdir}/fglrx
+
+ln -sf fglrx/libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
+ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/fglrx/libGL.so.1
+%else
+cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
+
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
+%endif
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
 install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
@@ -164,7 +180,11 @@ echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_syscon
 
 cd $RPM_BUILD_ROOT%{_libdir}
 for f in libfglrx_dm libfglrx_gamma libfglrx_pp libfglrx_tvout; do
+%if %{with multigl}
+	ln -s fglrx/$f.so.* $f.so
+%else
 	ln -s $f.so.* $f.so
+%endif
 done
 %endif
 
@@ -189,6 +209,16 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
+%if %{with multigl}
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
+%dir %{_libdir}/fglrx
+%attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/fglrx/libGL.so.1
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
+%else
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libGL.so.1
 %attr(755,root,root) %{_libdir}/libGL.so
@@ -196,6 +226,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
+%endif
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
@@ -211,6 +242,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/GL/glATI.h
 %{_includedir}/GL/glxATI.h
 %{_includedir}/X11/extensions/fglrx_gamma.h
+%if %{with multigl}
+%attr(755,root,root) %{_libdir}/libGL.so
+%endif
 
 %files static
 %defattr(644,root,root,755)
