@@ -29,7 +29,7 @@ Release:	%{_rel}%{?with_multigl:.mgl}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
-# Source0-md5:	d02add61ee36a4183510317c3c42b147
+# Source0-md5:	56ff087389b5594f0db9949354bb0698
 Patch0:		%{name}-kh.patch
 Patch1:		%{name}-pm.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
