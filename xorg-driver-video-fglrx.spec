@@ -23,14 +23,15 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.41.7
-%define		_rel	0.5
+Version:	8.42.3
+%define		_rel	0.1
 Release:	%{_rel}%{?with_multigl:.mgl}
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
-# Source0-md5:	0b43b45499ced87a6bd30d99faed25cc
+# Source0-md5:	56ff087389b5594f0db9949354bb0698
 Patch0:		%{name}-kh.patch
+Patch1:		%{name}-pm.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -43,7 +44,7 @@ BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) = 1.2
+Requires:	xorg-xserver-server(videodrv-abi) = 2.0
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
 %if !%{with multigl}
@@ -125,7 +126,10 @@ sh %{SOURCE0} --extract .
 cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
 cd common
-%{?with_dist_kernel:%patch0 -p1}
+%if %{with dist_kernel}
+%patch0 -p1
+%endif
+%patch1 -p2
 cd -
 
 install -d common%{_prefix}/{%{_lib},bin}
