@@ -47,7 +47,7 @@ Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) = 2.0
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
-# hack to make mesa compatible
+# hack to make OpenGL ABI compatible
 %ifarch %{x8664}
 Provides:	libGL.so.1()(64bit)
 %else
