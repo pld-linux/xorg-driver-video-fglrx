@@ -223,14 +223,14 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/fglrx/libGL.so.1
+%attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
 %else
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libGL.so.1
+%attr(755,root,root) %{_libdir}/libGL.so.1
 %attr(755,root,root) %{_libdir}/libGL.so
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
