@@ -3,13 +3,16 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
-%bcond_with	verbose		# verbose build (V=1)
 %bcond_with	multigl		# package libGL in a way allowing concurrent install with nvidia/fglrx drivers
 
 %define		x11ver		x710
 
 %if !%{with kernel}
 %undefine with_dist_kernel
+%endif
+
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
 %endif
 
 %ifarch %{ix86}
@@ -20,9 +23,11 @@
 %define		arch_dir	x86_64
 %endif
 
+%define		pname		xorg-driver-video-fglrx
+
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
-Name:		xorg-driver-video-fglrx
+Name:		%{pname}%{_alt_kernel}
 Version:	8.42.3
 %define		_rel	3
 Release:	%{_rel}%{?with_multigl:.mgl}
@@ -30,8 +35,8 @@ License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
 # Source0-md5:	56ff087389b5594f0db9949354bb0698
-Patch0:		%{name}-kh.patch
-Patch1:		%{name}-pm.patch
+Patch0:		%{pname}-kh.patch
+Patch1:		%{pname}-pm.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -83,7 +88,7 @@ akcelerowany OpenGL.
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{pname} = %{version}-%{release}
 # or more?
 Requires:	xorg-proto-glproto-devel
 
@@ -99,7 +104,7 @@ ATI dla kart graficznych Radeon.
 Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{pname}-devel = %{version}-%{release}
 
 %description static
 Static libraries for development for the ATI proprietary driver for
