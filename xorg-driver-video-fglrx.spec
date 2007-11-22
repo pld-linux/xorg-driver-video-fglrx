@@ -23,13 +23,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	8.42.3
-%define		_rel	3
+Version:	7.11
+%define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
+Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%{version}-x86.x86_64.run
-# Source0-md5:	56ff087389b5594f0db9949354bb0698
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-7-11-x86.x86_64.run
+# Source0-md5:	099eead18eb845f83da1d743dc17cc47
 Patch0:		%{name}-kh.patch
 Patch1:		%{name}-pm.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
@@ -83,7 +84,7 @@ akcelerowany OpenGL.
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 # or more?
 Requires:	xorg-proto-glproto-devel
 
@@ -99,7 +100,7 @@ ATI dla kart graficznych Radeon.
 Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Static libraries for development for the ATI proprietary driver for
