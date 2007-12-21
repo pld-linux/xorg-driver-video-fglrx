@@ -23,14 +23,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	7.11
-%define		_rel	4
+Version:	7.12
+%define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-7-11-x86.x86_64.run
-# Source0-md5:	099eead18eb845f83da1d743dc17cc47
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8.443.1-x86.x86_64.run
+# Source0-md5:	5d40b0c7a6f9e8356fdcd38052ae5e7b
 Patch0:		%{name}-kh.patch
 Patch1:		%{name}-pm.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
