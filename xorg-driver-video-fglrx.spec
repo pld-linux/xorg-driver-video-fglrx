@@ -23,14 +23,15 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		xorg-driver-video-fglrx
-Version:	7.12
-%define		_rel	1
+Version:	7.11
+%define		_rel	4
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8.443.1-x86.x86_64.run
-# Source0-md5:	5d40b0c7a6f9e8356fdcd38052ae5e7b
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-7-11-x86.x86_64.run
+# Source0-md5:	099eead18eb845f83da1d743dc17cc47
+Source1:	%{name}.desktop
 Patch0:		%{name}-kh.patch
 Patch1:		%{name}-pm.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
@@ -160,13 +161,17 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
 
-install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma} \
+install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma,amdcccle} \
 	$RPM_BUILD_ROOT%{_bindir}
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
+
+cp -r common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
+cp -r %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
+cp -r common%{_datadir}/icons/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
 
 %if %{with multigl}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/ld.so.conf.d,%{_libdir}/fglrx}
@@ -220,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
+%{_desktopdir}
+%{_pixmapsdir}/*.xpm
+%{_datadir}/ati
 %if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
