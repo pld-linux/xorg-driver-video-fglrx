@@ -166,6 +166,8 @@ install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma,amdcccle
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
+cp -r common%{_sysconfdir}/ati/amdpcsdb.default $RPM_BUILD_ROOT%{_sysconfdir}/ati/amdpcsdb.default
+cp -r common%{_sysconfdir}/ati/atiogl.xml $RPM_BUILD_ROOT%{_sysconfdir}/ati/atiogl.xml
 
 cp -r common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
 cp -r %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
@@ -221,6 +223,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/ati
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/amdpcsdb.default
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/atiogl.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
 %{_desktopdir}
