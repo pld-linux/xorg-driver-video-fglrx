@@ -3,13 +3,16 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
-%bcond_with	verbose		# verbose build (V=1)
 %bcond_with	multigl		# package libGL in a way allowing concurrent install with nvidia/fglrx drivers
 
 %define		x11ver		x710
 
 %if !%{with kernel}
 %undefine with_dist_kernel
+%endif
+
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
 %endif
 
 %ifarch %{ix86}
@@ -20,20 +23,21 @@
 %define		arch_dir	x86_64
 %endif
 
+%define		pname		xorg-driver-video-fglrx
+
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
-Name:		xorg-driver-video-fglrx
-Version:	7.11
-%define		_rel	4
+Name:		%{pname}%{_alt_kernel}
+Version:	8.1
+%define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-7-11-x86.x86_64.run
-# Source0-md5:	099eead18eb845f83da1d743dc17cc47
-Source1:	%{name}.desktop
-Patch0:		%{name}-kh.patch
-Patch1:		%{name}-pm.patch
+Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-01-x86.x86_64.run
+# Source0-md5:	cf8f493901f5abb28347e7aa7c9d6cca
+Source1:	%{pname}.desktop
+Patch0:		%{pname}-kh.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -85,7 +89,7 @@ akcelerowany OpenGL.
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{pname} = %{epoch}:%{version}-%{release}
 # or more?
 Requires:	xorg-proto-glproto-devel
 
@@ -101,7 +105,7 @@ ATI dla kart graficznych Radeon.
 Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{name}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{pname}-devel = %{epoch}:%{version}-%{release}
 
 %description static
 Static libraries for development for the ATI proprietary driver for
@@ -137,7 +141,6 @@ cd common
 %if %{with dist_kernel}
 %patch0 -p1
 %endif
-%patch1 -p2
 cd -
 
 install -d common%{_prefix}/{%{_lib},bin}
@@ -168,6 +171,8 @@ install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma,amdcccle
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
+cp -r common%{_sysconfdir}/ati/amdpcsdb.default $RPM_BUILD_ROOT%{_sysconfdir}/ati/amdpcsdb.default
+cp -r common%{_sysconfdir}/ati/atiogl.xml $RPM_BUILD_ROOT%{_sysconfdir}/ati/atiogl.xml
 
 cp -r common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
 cp -r %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
@@ -219,10 +224,12 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc ATI_LICENSE.TXT common%{_docdir}/fglrx/*.html common%{_docdir}/fglrx/articles common%{_docdir}/fglrx/release-notes common%{_docdir}/fglrx/user-manual
+%doc ATI_LICENSE.TXT common%{_docdir}/fglrx/*.html common%{_docdir}/fglrx/articles common%{_docdir}/fglrx/user-manual
 %dir %{_sysconfdir}/ati
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/amdpcsdb.default
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/atiogl.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
 %{_desktopdir}
