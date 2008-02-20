@@ -29,14 +29,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	8.1
-%define		_rel	5
+Version:	8.2
+%define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-01-x86.x86_64.run
-# Source0-md5:	cf8f493901f5abb28347e7aa7c9d6cca
+Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-02-x86.x86_64.run
+# Source0-md5:	bcdf3c19c0b7a7c2051d751d5131d426
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
