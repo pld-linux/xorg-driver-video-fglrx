@@ -39,7 +39,7 @@ Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8
 # Source0-md5:	8fa23f45b4becc9721e67858e41ff85c
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
-URL:		http://www.ati.com/support/drivers/linux/radeon-linux.html
+URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %{?with_userspace:BuildRequires:	qt-devel}
