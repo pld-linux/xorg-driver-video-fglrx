@@ -29,14 +29,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	8.4
+Version:	8.5
 %define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-4-x86.x86_64.run
-# Source0-md5:	8fa23f45b4becc9721e67858e41ff85c
+Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-5-x86.x86_64.run
+# Source0-md5:	303a7c2c5a42f21cb92692cf77c83052
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
@@ -239,6 +239,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
+%attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
@@ -246,6 +247,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
 %else
+%attr(755,root,root) %{_libdir}/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/libGL.so.1
 %attr(755,root,root) %{_libdir}/libGL.so
