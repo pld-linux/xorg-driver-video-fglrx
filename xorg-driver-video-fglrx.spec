@@ -29,14 +29,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	8.5
-%define		_rel	3
+Version:	8.6
+%define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-5-x86.x86_64.run
-# Source0-md5:	303a7c2c5a42f21cb92692cf77c83052
+Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-6-x86.x86_64.run
+# Source0-md5:	b48a5b7ba10a283d562c2bbecd72315a
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
@@ -144,10 +144,11 @@ cd common
 %endif
 cd -
 
-install -d common%{_prefix}/{%{_lib},bin}
+install -d common%{_prefix}/{%{_lib},bin,sbin}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
+cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
 
 %build
 %if %{with kernel}
@@ -165,10 +166,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_sbindir},%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
 
-install common%{_bindir}/{fgl_glxgears,fglrxinfo,aticonfig,fglrx_xgamma,amdcccle} \
+install common%{_bindir}/{amdcccle,aticonfig,atiodcli,atiode,fgl_glxgears,fglrx_xgamma,fglrxinfo} \
 	$RPM_BUILD_ROOT%{_bindir}
+install common%{_sbindir}/{amdnotifyui,atieventsd} \
+	$RPM_BUILD_ROOT%{_sbindir}
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
@@ -233,6 +236,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/atiogl.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_sbindir}/*
 %{_desktopdir}
 %{_pixmapsdir}/*.xpm
 %{_datadir}/ati
@@ -259,6 +263,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
+%attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
 %attr(755,root,root) %{_libdir}/xorg/modules/esut.a
 
