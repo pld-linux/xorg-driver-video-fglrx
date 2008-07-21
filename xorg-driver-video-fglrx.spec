@@ -29,14 +29,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	8.6
-%define		_rel	8
+Version:	8.7
+%define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-6-x86.x86_64.run
-# Source0-md5:	b48a5b7ba10a283d562c2bbecd72315a
+Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-7-x86.x86_64.run
+# Source0-md5:	2d0788eaba71abcce6105ee659406721
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
