@@ -239,7 +239,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%{_desktopdir}
+%{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.xpm
 %{_datadir}/ati
 %if %{with multigl}
