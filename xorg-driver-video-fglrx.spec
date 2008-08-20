@@ -29,14 +29,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	8.7
-%define		_rel	5
+Version:	8.8
+%define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-7-x86.x86_64.run
-# Source0-md5:	2d0788eaba71abcce6105ee659406721
+Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-8-x86.x86_64.run
+# Source0-md5:	276976fb5aaf108efcdbf37256bf6d51
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
@@ -249,6 +249,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
+%attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.cap
+%attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
@@ -256,7 +258,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
 %else
+%attr(755,root,root) %{_libdir}/libAMDXvBA.cap
+%attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
 %attr(755,root,root) %{_libdir}/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/libGL.so.1
@@ -265,6 +270,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
+%attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
 %endif
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
