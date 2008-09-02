@@ -196,13 +196,13 @@ echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
 cp -r common%{_libdir}/lib*.a $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_libdir}/lib*.so* $RPM_BUILD_ROOT%{_libdir}/fglrx
 
+/sbin/ldconfig -n $RPM_BUILD_ROOT%{_libdir}/fglrx
 ln -sf fglrx/libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
-ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/fglrx/libGL.so.1
 %else
 cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
 
+/sbin/ldconfig -n $RPM_BUILD_ROOT%{_libdir}
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
-ln -sf libGL.so.1.2 $RPM_BUILD_ROOT%{_libdir}/libGL.so.1
 %endif
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
@@ -212,9 +212,9 @@ echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_syscon
 cd $RPM_BUILD_ROOT%{_libdir}
 for f in libfglrx_dm libfglrx_gamma libfglrx_pp libfglrx_tvout; do
 %if %{with multigl}
-	ln -s fglrx/$f.so.* $f.so
+	ln -s fglrx/$f.so.*.* $f.so
 %else
-	ln -s $f.so.* $f.so
+	ln -s $f.so.*.* $f.so
 %endif
 done
 %endif
@@ -249,32 +249,40 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
-%ifnarch %{x8664}
-%attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.cap
+%ifarch %{ix86}
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.1
+%{_libdir}/fglrx/libAMDXvBA.cap
 %endif
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.1
 %else
-%ifnarch %{x8664}
-%attr(755,root,root) %{_libdir}/libAMDXvBA.cap
+%ifarch %{ix86}
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libXvBAW.so.1
+%{_libdir}/libAMDXvBA.cap
 %endif
 %attr(755,root,root) %{_libdir}/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
-%attr(755,root,root) %{_libdir}/libGL.so.1
+%attr(755,root,root) %ghost %{_libdir}/libGL.so.1
 %attr(755,root,root) %{_libdir}/libGL.so
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libfglrx_tvout.so.1
 %endif
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
