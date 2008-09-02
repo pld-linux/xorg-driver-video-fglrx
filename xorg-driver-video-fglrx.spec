@@ -30,7 +30,7 @@ Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
 Version:	8.8
-%define		_rel	3
+%define		_rel	4
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
@@ -249,8 +249,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
+%ifnarch %{x8664}
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
+%attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
+%endif
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
@@ -258,10 +261,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
-%attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
 %else
+%ifnarch %{x8664}
 %attr(755,root,root) %{_libdir}/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
+%attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
+%endif
 %attr(755,root,root) %{_libdir}/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/libGL.so.1
@@ -270,7 +275,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
-%attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
 %endif
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
