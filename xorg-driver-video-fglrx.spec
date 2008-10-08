@@ -52,7 +52,8 @@ BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) = 2.0
+Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
+Requires:	xorg-xserver-server(videodrv-abi) < 3.0
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
 # hack to make OpenGL ABI compatible
