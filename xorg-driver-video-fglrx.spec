@@ -29,14 +29,14 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	8.9
+Version:	8.10
 %define		_rel	1
 Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-9-x86.x86_64.run
-# Source0-md5:	9e1bb93afaf194907e6b141b2e3c524b
+Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-10-x86.x86_64.run
+# Source0-md5:	4eed6f50089856a4c600a200914d5a55
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
@@ -142,7 +142,7 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 
 cd common
 %if %{with dist_kernel}
-%patch0 -p1
+%patch0 -p2
 %patch1 -p0
 %endif
 cd -
