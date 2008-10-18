@@ -35,7 +35,7 @@ Release:	%{_rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:        http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-10-x86.x86_64.run
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-10-x86.x86_64.run
 # Source0-md5:	4eed6f50089856a4c600a200914d5a55
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
