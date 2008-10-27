@@ -8,12 +8,15 @@
 
 %define		x11ver		x710
 
-%if !%{with kernel}
-%undefine with_dist_kernel
+%if %{without kernel}
+%undefine	with_dist_kernel
 %endif
-
 %if "%{_alt_kernel}" != "%{nil}"
 %undefine	with_userspace
+%endif
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
 %endif
 
 %ifarch %{ix86}
@@ -24,14 +27,13 @@
 %define		arch_dir	x86_64
 %endif
 
+%define		rel	1
 %define		pname		xorg-driver-video-fglrx
-
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
 Version:	8.10
-%define		_rel	1
-Release:	%{_rel}%{?with_multigl:.mgl}
+Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
@@ -121,7 +123,7 @@ sterownika ATI dla kart graficznych ATI Radeon.
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
 Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel}
