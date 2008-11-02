@@ -262,7 +262,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
-%ifarch %{ix86}
+%ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
@@ -279,7 +279,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.1
 %else
-%ifarch %{ix86}
+%ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
