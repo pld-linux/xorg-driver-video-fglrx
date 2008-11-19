@@ -27,19 +27,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	0.1
+%define		rel	1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	8.10.1
+Version:	8.11
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-#Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-10-x86.x86_64.run
-Source0:	http://ftp.kaist.ac.kr/ubuntu/pool/restricted/f/fglrx-installer/fglrx-installer_8.543.orig.tar.gz
-# Source0-md5:	6abc8e86f1a00168ba8f43d58f71cb69
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-8-11-x86.x86_64.run
+# Source0-md5:	9774452430dae8fd8b27eb6379da2e16
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
@@ -56,7 +55,7 @@ BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	xorg-xserver-libglx
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
-Requires:	xorg-xserver-server(videodrv-abi) < 3.0
+Requires:	xorg-xserver-server(videodrv-abi) <= 4.1
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
 # hack to make OpenGL ABI compatible
@@ -139,10 +138,9 @@ Moduł jądra oferujący wsparcie dla ATI FireGL.
 %prep
 %setup -q -c -T
 
-tar -zxf %{SOURCE0}
+sh %{SOURCE0} --extract .
 
-install -d common/lib/modules/fglrx/build_mod
-cp -rf lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
+cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
 cd common
 %if %{with dist_kernel}
@@ -152,22 +150,10 @@ cd common
 cd -
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
-install -d common%{_sysconfdir}/ati
-install -d common%{_datadir}/{ati,icons,doc/fglrx}
-install -d common%{_includedir}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
-cp -r arch/%{arch_dir}/lib/* common/lib
-cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
+cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
-cp -r etc/* common%{_sysconfdir}
-cp -r usr/X11R6/bin/* common%{_bindir}
-cp -r usr/sbin/* common%{_sbindir}
-cp -r usr/share/ati/* common%{_datadir}/ati
-cp -r usr/share/doc/* common%{_datadir}/doc
-cp -r usr/share/icons/* common%{_datadir}/icons
-cp -r usr/include/* common%{_includedir}
-cp -r usr/X11R6/include/* common%{_includedir}
 
 %build
 %if %{with kernel}
@@ -219,7 +205,7 @@ ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 %endif
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
-install common/usr/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
+install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 
 cd $RPM_BUILD_ROOT%{_libdir}
@@ -247,7 +233,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc common%{_docdir}/fglrx/ATI_LICENSE.TXT common%{_docdir}/fglrx/*.html common%{_docdir}/fglrx/articles common%{_docdir}/fglrx/user-manual
+%doc ATI_LICENSE.TXT common%{_docdir}/fglrx/*.html common%{_docdir}/fglrx/articles common%{_docdir}/fglrx/user-manual
 %dir %{_sysconfdir}/ati
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
@@ -300,7 +286,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 #%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libdri.so
-#%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
