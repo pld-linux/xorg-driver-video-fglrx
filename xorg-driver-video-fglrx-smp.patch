@@ -1,15 +1,15 @@
---- lib/modules/fglrx/build_mod/firegl_public.c.orig	2008-10-19 12:16:58.000000000 +0200
-+++ lib/modules/fglrx/build_mod/firegl_public.c	2008-10-19 16:51:33.000000000 +0200
-@@ -251,7 +251,7 @@
+--- lib/modules/fglrx/build_mod/firegl_public.c.orig	2008-12-04 23:56:18.000000000 +0100
++++ lib/modules/fglrx/build_mod/firegl_public.c	2008-12-16 10:38:36.413113059 +0100
+@@ -241,7 +241,7 @@
  const char BUILD_KERNEL_HAS_MODVERSIONS_CLEARED;
  #endif
  
 -#ifdef __SMP__
 +#ifdef CONFIG_SMP
- const unsigned long __ke_SMP_State = 1;
+ const unsigned long KCL_SYSINFO_SmpSupport = 1;
  const char BUILD_KERNEL_HAS_SMP_SET;
  #else
-@@ -2728,7 +2728,7 @@
+@@ -2499,7 +2499,7 @@
  
  /*****************************************************************************/
  
@@ -18,7 +18,7 @@
  static atomic_t cpus_waiting;
  
  static void deferred_flush(void* contextp)
-@@ -2744,7 +2744,7 @@
+@@ -2515,7 +2515,7 @@
  	while (atomic_read(&cpus_waiting) > 0)
  		barrier();
  }
@@ -27,16 +27,16 @@
  
  /** \brief Run a function on all other CPUs.
   * \param func The function to run.
-@@ -2760,7 +2760,7 @@
+@@ -2531,7 +2531,7 @@
  
- int ATI_API_CALL __ke_flush_cache(void)
+ int ATI_API_CALL KCL_MEM_FlushCpuCaches(void)
  {
 -#ifdef __SMP__
 +#ifdef CONFIG_SMP
      /* write back invalidate all other CPUs (exported by kernel) */
  	if (KCL_SmpCallFunction(deferred_flush, NULL, 1, 0) != 0)
  		panic("timed out waiting for the other CPUs!\n");
-@@ -2776,7 +2776,7 @@
+@@ -2547,7 +2547,7 @@
  
  	while (atomic_read(&cpus_waiting) > 0)
  		barrier();
@@ -45,7 +45,7 @@
  #if defined(__i386__) || defined(__x86_64__)
  	asm volatile ("wbinvd":::"memory");
  #elif defined(__alpha__) || defined(__sparc__)
-@@ -2784,7 +2784,7 @@
+@@ -2555,7 +2555,7 @@
  #else
  #error "Please define flush_cache for your architecture."
  #endif
