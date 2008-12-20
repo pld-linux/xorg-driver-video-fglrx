@@ -29,7 +29,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	3
+%define		rel	3.1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -54,7 +54,8 @@ BuildRequires:	xorg-lib-libXxf86vm-devel
 BuildRequires:	xorg-proto-recordproto-devel
 BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
-Requires:	xorg-xserver-libglx
+Requires:	%{pname}-libdri = %{epoch}:%{version}-%{release}
+Requires:	%{pname}-libglx = %{epoch}:%{version}-%{release}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Requires:	xorg-xserver-server(videodrv-abi) <= 4.1
@@ -98,10 +99,10 @@ akcelerowany OpenGL.
 Summary:	DRI extension library for X.org server with fglrx driver
 Summary(pl.UTF-8):	Biblioteka rozszerzenia DRI dla serwera X.org ze sterownikiem fglrx
 Group:		X11/Servers
-Requires:	%{pname} = %{epoch}:%{version}-%{release}
 # It should be some virtual provides?
 Provides:	xorg-xserver-modules-libdri
-#Conflicts:      xorg-driver-video-nvidia
+Conflicts:	xorg-driver-video-nvidia
+Conflicts:	xorg-xserver-libdri
 
 %description libdri
 DRI extension library for X.org server with fglrx driver.
@@ -113,12 +114,11 @@ Biblioteka rozszerzenia DRI dla serwera X.org with fglrx driver.
 Summary:	GLX extension library for X.org server with fglrx driver
 Summary(pl.UTF-8):	Biblioteka rozszerzenia GLX dla serwera X.org ze sterownikiem fglrx
 Group:		X11/Servers
-Requires:	%{pname} = %{epoch}:%{version}-%{release}
 # What should be here?
 #Provides:	xorg-xserver-libglx(glapi) = 7.1.0
-# It should be some virtual provides?
 Provides:	xorg-xserver-modules-libglx
-Conflicts:      xorg-driver-video-nvidia
+Conflicts:	xorg-driver-video-nvidia
+Conflicts:	xorg-xserver-libglx
 
 %description libglx
 GLX extension library for X.org server with fglrx driver.
