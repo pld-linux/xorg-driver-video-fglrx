@@ -1,3 +1,5 @@
+# TODO:
+# - prepare libglx and libdri for multigl 
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -91,6 +93,38 @@ Sterowniki do kart graficznych ATI Radeon 8500, 9700, Mobility M9 oraz
 graficznych akceleratorów FireGL 8700/8800, E1, Z1/X1. Pakiet
 dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
 akcelerowany OpenGL.
+
+%package libdri
+Summary:	DRI extension library for X.org server with fglrx driver
+Summary(pl.UTF-8):	Biblioteka rozszerzenia DRI dla serwera X.org ze sterownikiem fglrx
+Group:		X11/Servers
+Requires:	%{pname} = %{epoch}:%{version}-%{release}
+# It should be some virtual provides?
+Provides:	xorg-xserver-modules-libdri
+#Conflicts:      xorg-driver-video-nvidia
+
+%description libdri
+DRI extension library for X.org server with fglrx driver.
+
+%description libdri -l pl.UTF-8
+Biblioteka rozszerzenia DRI dla serwera X.org with fglrx driver.
+
+%package libglx
+Summary:	GLX extension library for X.org server with fglrx driver
+Summary(pl.UTF-8):	Biblioteka rozszerzenia GLX dla serwera X.org ze sterownikiem fglrx
+Group:		X11/Servers
+Requires:	%{pname} = %{epoch}:%{version}-%{release}
+# What should be here?
+#Provides:	xorg-xserver-libglx(glapi) = 7.1.0
+# It should be some virtual provides?
+Provides:	xorg-xserver-modules-libglx
+Conflicts:      xorg-driver-video-nvidia
+
+%description libglx
+GLX extension library for X.org server with fglrx driver.
+
+%description libglx -l pl.UTF-8
+Biblioteka rozszerzenia GLX dla serwera X.org with fglrx driver.
 
 %package devel
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
@@ -287,11 +321,18 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
-#%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libdri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
 %attr(755,root,root) %{_libdir}/xorg/modules/esut.a
+
+%files libdri
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libdri.so
+
+%files libglx
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
 
 %files devel
 %defattr(644,root,root,755)
