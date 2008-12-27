@@ -1,5 +1,6 @@
 # TODO:
-# - prepare libglx and libdri for multigl 
+# - prepare libglx and libdri for multigl (possible only using separate X-server instances)
+# - merge libglx and libdri back into driver package?
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -99,8 +100,7 @@ akcelerowany OpenGL.
 Summary:	DRI extension library for X.org server with fglrx driver
 Summary(pl.UTF-8):	Biblioteka rozszerzenia DRI dla serwera X.org ze sterownikiem fglrx
 Group:		X11/Servers
-# It should be some virtual provides?
-Provides:	xorg-xserver-modules-libdri
+Provides:	xorg-xserver-module(dri)
 Conflicts:	xorg-driver-video-nvidia
 Conflicts:	xorg-xserver-libdri
 
@@ -114,9 +114,7 @@ Biblioteka rozszerzenia DRI dla serwera X.org with fglrx driver.
 Summary:	GLX extension library for X.org server with fglrx driver
 Summary(pl.UTF-8):	Biblioteka rozszerzenia GLX dla serwera X.org ze sterownikiem fglrx
 Group:		X11/Servers
-# What should be here?
-#Provides:	xorg-xserver-libglx(glapi) = 7.1.0
-Provides:	xorg-xserver-modules-libglx
+Provides:	xorg-xserver-module(glx)
 Conflicts:	xorg-driver-video-nvidia
 Conflicts:	xorg-xserver-libglx
 
