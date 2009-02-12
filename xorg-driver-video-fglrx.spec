@@ -30,7 +30,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	3
+%define		rel	4
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -203,14 +203,14 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_sbindir},%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_prefix}/lib,%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_sbindir},%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
 
 install common%{_bindir}/{amdcccle,aticonfig,atiodcli,atiode,fgl_glxgears,fglrx_xgamma,fglrxinfo} \
 	$RPM_BUILD_ROOT%{_bindir}
 install common%{_sbindir}/{amdnotifyui,atieventsd} \
 	$RPM_BUILD_ROOT%{_sbindir}
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
-ln -s %{_libdir}/xorg/modules/dri $RPM_BUILD_ROOT%{_prefix}/lib
+ln -s %{_libdir}/xorg/modules/dri $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
 cp -r common%{_sysconfdir}/ati/amdpcsdb.default $RPM_BUILD_ROOT%{_sysconfdir}/ati/amdpcsdb.default
@@ -316,7 +316,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_tvout.so.1
 %endif
-%{_prefix}/lib/dri
+%{_libdir}/dri
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
