@@ -30,7 +30,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	2.1
+%define		rel	2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -158,7 +158,7 @@ Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
 Release:	%{rel}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
-#%{?with_dist_kernel:%requires_releq_kernel}
+%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
 
 %description -n kernel%{_alt_kernel}-video-firegl
