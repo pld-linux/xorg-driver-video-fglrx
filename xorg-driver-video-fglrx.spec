@@ -35,13 +35,13 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	9.3
+Version:	9.4
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-9-3-x86.x86_64.run
-# Source0-md5:	3875441c1e6f9bd7e0c2d006eb0708b3
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-9-4-x86.x86_64.run
+# Source0-md5:	bdedd0405021f31000cca3399d5f7336
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
@@ -60,7 +60,7 @@ Requires:	%{pname}-libdri = %{epoch}:%{version}-%{release}
 Requires:	%{pname}-libglx = %{epoch}:%{version}-%{release}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
-Requires:	xorg-xserver-server(videodrv-abi) <= 4.1
+#Requires:	xorg-xserver-server(videodrv-abi) <= 4.1
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
 # hack to make OpenGL ABI compatible
