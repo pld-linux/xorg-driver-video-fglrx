@@ -60,7 +60,7 @@ Requires:	%{pname}-libdri = %{epoch}:%{version}-%{release}
 Requires:	%{pname}-libglx = %{epoch}:%{version}-%{release}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
-#Requires:	xorg-xserver-server(videodrv-abi) <= 4.1
+Requires:	xorg-xserver-server(videodrv-abi) <= 5.0
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
 # hack to make OpenGL ABI compatible
@@ -340,6 +340,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so
 %attr(755,root,root) %{_libdir}/libfglrx_pp.so
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so
+%attr(755,root,root) %{_includedir}/GL
 %{_includedir}/GL/glATI.h
 %{_includedir}/GL/glxATI.h
 %{_includedir}/X11/extensions/fglrx_gamma.h
