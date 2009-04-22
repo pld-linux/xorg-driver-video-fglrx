@@ -30,7 +30,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	1
+%define		rel	2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -179,7 +179,9 @@ cd common
 %if %{with dist_kernel}
 %patch0 -p2
 %patch1 -p0
+%if "%{_kernel_ver}" >= "2.6.29"
 %patch2 -p2
+%endif
 %endif
 cd -
 
