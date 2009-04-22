@@ -9,15 +9,6 @@
  const unsigned long KCL_SYSINFO_SmpSupport = 1;
  const char BUILD_KERNEL_HAS_SMP_SET;
  #else
-@@ -2256,7 +2256,7 @@
-  * kernel <  2.6.27, on_each_cpu has 4 parameters.
-  * kernel >= 2.6.27, on_each_cpu has 3 parameters (removed the "retry" parameter)
-  */
--#if defined(__x86_64__) && defined(__SMP__) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,25)) 
-+#if defined(__x86_64__) && defined(CONFIG_SMP) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,25)) 
- #   if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,27))
-         on_each_cpu(KCL_flush_tlb_one, &va, 1, 1);
- #   else
 @@ -2503,7 +2503,7 @@
  
  /*****************************************************************************/
