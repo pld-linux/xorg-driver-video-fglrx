@@ -1,6 +1,3 @@
-# TODO:
-# - prepare libglx and libdri for multigl (possible only using separate X-server instances)
-# - merge libglx and libdri back into driver package?
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel

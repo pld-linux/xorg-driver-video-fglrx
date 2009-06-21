@@ -1,0 +1,4 @@
+# TODO:
+- prepare libglx and libdri for multigl (possible only using separate X-server instances)
+- merge libglx and libdri back into driver package?
+
