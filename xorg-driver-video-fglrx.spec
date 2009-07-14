@@ -43,6 +43,7 @@ Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
 Patch2:		%{pname}-2.6.29.patch
+Patch3:		%{pname}-2.6.30.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -176,9 +177,8 @@ cd common
 %if %{with dist_kernel}
 %patch0 -p2
 %patch1 -p0
-%if "%{_kernel_ver}" >= "2.6.29"
 %patch2 -p2
-%endif
+%patch3 -p2
 %endif
 cd -
 
