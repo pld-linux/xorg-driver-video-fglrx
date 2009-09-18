@@ -37,8 +37,8 @@ Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-9-8-x86.x86_64.run
-# Source0-md5:	fc08593edd2d4eff51f893a9292b58f9
+Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-9-9-x86.x86_64.run
+# Source0-md5:	b6df55513535a9c5096de2208127b4b8
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
@@ -241,7 +241,7 @@ install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 
 cd $RPM_BUILD_ROOT%{_libdir}
-for f in libfglrx_dm libfglrx_gamma libfglrx_pp libfglrx_tvout; do
+for f in libfglrx_dm libfglrx_gamma libfglrx_tvout; do
 %if %{with multigl}
 	ln -s fglrx/$f.so.*.* $f.so
 %else
@@ -293,7 +293,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.1
-%attr(755,root,root) %{_libdir}/fglrx/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.1
 %else
@@ -311,7 +310,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
-%attr(755,root,root) %{_libdir}/libfglrx_pp.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_tvout.so.1
 %endif
@@ -335,7 +333,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so
-%attr(755,root,root) %{_libdir}/libfglrx_pp.so
 %attr(755,root,root) %{_libdir}/libfglrx_tvout.so
 %attr(755,root,root) %{_includedir}/GL
 %{_includedir}/GL/glATI.h
@@ -349,7 +346,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libfglrx_dm.a
 %{_libdir}/libfglrx_gamma.a
-%{_libdir}/libfglrx_pp.a
 %{_libdir}/libfglrx_tvout.a
 %endif
 
