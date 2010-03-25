@@ -1,4 +1,7 @@
 #
+# TODO:
+#	- xserver 1.7 / xorg 7.5 support (10.3 still no-go)
+#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
