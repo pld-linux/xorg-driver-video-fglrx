@@ -296,8 +296,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.1
-%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
-%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.1
+#%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
+#%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.1
 %else
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
@@ -313,8 +313,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
-%attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfglrx_tvout.so.1
+#%attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
+#%attr(755,root,root) %ghost %{_libdir}/libfglrx_tvout.so.1
 %endif
 %{_libdir}/dri
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
@@ -336,7 +336,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so
-%attr(755,root,root) %{_libdir}/libfglrx_tvout.so
+#%attr(755,root,root) %{_libdir}/libfglrx_tvout.so
 %attr(755,root,root) %{_includedir}/GL
 %{_includedir}/GL/glATI.h
 %{_includedir}/GL/glxATI.h
@@ -349,7 +349,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libfglrx_dm.a
 %{_libdir}/libfglrx_gamma.a
-%{_libdir}/libfglrx_tvout.a
+#%{_libdir}/libfglrx_tvout.a
 %endif
 
 %if %{with kernel}
