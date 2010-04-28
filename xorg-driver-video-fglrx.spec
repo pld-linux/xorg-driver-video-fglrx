@@ -1,6 +1,6 @@
 #
 # TODO:
-#	- xserver 1.7 / xorg 7.5 support (10.3 still no-go)
+#	- xserver 1.8 support (10.4 fails  miserably)
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -9,7 +9,7 @@
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	multigl		# package libGL in a way allowing concurrent install with nvidia/fglrx drivers
 
-%define		x11ver		x740
+%define		x11ver		x750
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -56,7 +56,6 @@ BuildRequires:	xorg-lib-libXxf86vm-devel
 BuildRequires:	xorg-proto-recordproto-devel
 BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
-Requires:	%{pname}-libdri = %{epoch}:%{version}-%{release}
 Requires:	%{pname}-libglx = %{epoch}:%{version}-%{release}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
@@ -77,6 +76,7 @@ Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
+Obsoletes:	xorg-driver-video-fglrx-libdri
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -94,20 +94,6 @@ Sterowniki do kart graficznych ATI Radeon 8500, 9700, Mobility M9 oraz
 graficznych akceleratorów FireGL 8700/8800, E1, Z1/X1. Pakiet
 dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
 akcelerowany OpenGL.
-
-%package libdri
-Summary:	DRI extension library for X.org server with fglrx driver
-Summary(pl.UTF-8):	Biblioteka rozszerzenia DRI dla serwera X.org ze sterownikiem fglrx
-Group:		X11/Servers
-Provides:	xorg-xserver-module(dri)
-Conflicts:	xorg-driver-video-nvidia
-Conflicts:	xorg-xserver-libdri
-
-%description libdri
-DRI extension library for X.org server with fglrx driver.
-
-%description libdri -l pl.UTF-8
-Biblioteka rozszerzenia DRI dla serwera X.org with fglrx driver.
 
 %package libglx
 Summary:	GLX extension library for X.org server with fglrx driver
@@ -188,6 +174,7 @@ cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
+cp -r arch/%{arch_dir}/usr/%{_lib}/*.so.* common%{_libdir}
 
 %build
 %if %{with kernel}
@@ -244,7 +231,7 @@ install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 
 cd $RPM_BUILD_ROOT%{_libdir}
-for f in libfglrx_dm libfglrx_gamma libfglrx_tvout; do
+for f in libfglrx_dm libfglrx_gamma; do
 %if %{with multigl}
 	ln -s fglrx/$f.so.*.* $f.so
 %else
@@ -291,13 +278,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/fglrx/libAMDXvBA.cap
 %endif
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
+%attr(755,root,root) %{_libdir}/fglrx/libatiuki.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.1
-#%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.*.*
-#%attr(755,root,root) %{_libdir}/fglrx/libfglrx_tvout.so.1
 %else
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
@@ -307,14 +293,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libAMDXvBA.cap
 %endif
 %attr(755,root,root) %{_libdir}/libatiadlxx.so
+%attr(755,root,root) %{_libdir}/libatiuki.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libatiuki.so.1
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libGL.so.1
 %attr(755,root,root) %{_libdir}/libGL.so
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
-#%attr(755,root,root) %{_libdir}/libfglrx_tvout.so.*.*
-#%attr(755,root,root) %ghost %{_libdir}/libfglrx_tvout.so.1
 %endif
 %{_libdir}/dri
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
@@ -322,11 +308,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
-%attr(755,root,root) %{_libdir}/xorg/modules/esut.a
-
-%files libdri
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libdri.so
 
 %files libglx
 %defattr(644,root,root,755)
@@ -336,10 +317,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so
-#%attr(755,root,root) %{_libdir}/libfglrx_tvout.so
 %attr(755,root,root) %{_includedir}/GL
-%{_includedir}/GL/glATI.h
-%{_includedir}/GL/glxATI.h
 %{_includedir}/X11/extensions/fglrx_gamma.h
 %if %{with multigl}
 %attr(755,root,root) %{_libdir}/libGL.so
@@ -349,7 +327,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libfglrx_dm.a
 %{_libdir}/libfglrx_gamma.a
-#%{_libdir}/libfglrx_tvout.a
 %endif
 
 %if %{with kernel}
