@@ -1,6 +1,6 @@
 #
 # TODO:
-#	- xserver 1.8 support (10.4 fails  miserably)
+#	- xserver 1.8 support (10.5 fails  miserably)
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
