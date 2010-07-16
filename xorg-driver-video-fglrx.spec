@@ -1,7 +1,4 @@
 #
-# TODO:
-#	- xserver 1.8 support (10.5 fails  miserably)
-#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -30,18 +27,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	0.1
+%define		rel	0.2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	10.4
+Version:	10.6
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	f164488b9db552e06f7cb1c8246808be
+# Source0-md5:	089967a9aa86ad596884d82bb0b3a382
 Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
@@ -59,7 +56,7 @@ BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	%{pname}-libglx = %{epoch}:%{version}-%{release}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
-Requires:	xorg-xserver-server(videodrv-abi) <= 6.0
+Requires:	xorg-xserver-server(videodrv-abi) <= 7.0
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
 # hack to make OpenGL ABI compatible
