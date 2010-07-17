@@ -43,6 +43,7 @@ Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
 Patch2:		%{pname}-x86genericarch.patch
+Patch3:		fglrx-2.6.34-rc4.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -164,6 +165,7 @@ cd common
 %patch1 -p0
 %patch2 -p0
 %endif
+%patch3 -p2
 cd -
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
