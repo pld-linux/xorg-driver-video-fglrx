@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	1.1
+%define		rel	1.3
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -196,12 +196,16 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_sbindir},%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_sbindir}} \
+	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_mandir}/man8} \
+	$RPM_BUILD_ROOT{%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
 
-install common%{_bindir}/{amdcccle,aticonfig,atiodcli,atiode,fgl_glxgears,fglrx_xgamma,fglrxinfo} \
-	$RPM_BUILD_ROOT%{_bindir}
-install common%{_sbindir}/{amdnotifyui,atieventsd} \
-	$RPM_BUILD_ROOT%{_sbindir}
+install common%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
+install common/usr/X11R6/bin/* $RPM_BUILD_ROOT%{_bindir}
+install common%{_sbindir}/* $RPM_BUILD_ROOT%{_sbindir}
+
+rm $RPM_BUILD_ROOT%{_sbindir}/atigetsysteminfo.sh
+
 cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 ln -s %{_libdir}/xorg/modules/dri $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
@@ -213,6 +217,8 @@ cp -r common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
 cp -r common%{_datadir}/icons/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
 
 cp -r common%{_desktopdir}/*.desktop $RPM_BUILD_ROOT%{_desktopdir}
+
+cp -r common%{_mandir}/man8/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 %if %{with multigl}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/ld.so.conf.d,%{_libdir}/fglrx}
@@ -282,6 +288,7 @@ fi
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.xpm
 %{_datadir}/ati
+%{_mandir}/man8/*.8*
 %if %{with multigl}
 %ghost %{_libdir}/xorg/modules/extensions/libglx.so
 %attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so.%{version}
