@@ -1,0 +1,28 @@
+--- xorg-driver-video-fglrx-10.6/common/usr/share/applications/amdcccle.desktop~	2010-06-03 16:23:55.000000000 +0200
++++ xorg-driver-video-fglrx-10.6/common/usr/share/applications/amdcccle.desktop	2010-07-17 16:11:07.402132883 +0200
+@@ -3,9 +3,8 @@
+ Type=Application
+ Exec=amdcccle
+ Icon=ccc_large
+-Categories=GNOME;KDE;Qt;HardwareSettings;Settings;
+-
+-
++Terminal=false
++Categories=Qt;HardwareSettings;Settings;
+ Name=ATI Catalyst Control Center
+ Comment=Allows the configuration of the ATI graphics hardware settings.
+ Name[cs]=ATI Catalyst Control Center
+--- xorg-driver-video-fglrx-10.6/common/usr/share/applications/amdccclesu.desktop~	2010-06-03 16:23:55.000000000 +0200
++++ xorg-driver-video-fglrx-10.6/common/usr/share/applications/amdccclesu.desktop	2010-07-17 16:11:32.434382244 +0200
+@@ -2,9 +2,9 @@
+ Encoding=UTF-8
+ Type=Application
+ Exec=amdxdg-su -c amdcccle
+-Categories=GNOME;KDE;Qt;HardwareSettings;Settings;
++Categories=Qt;HardwareSettings;Settings;
+ Icon=ccc_large
+-
++Terminal=false
+ Name=ATI Catalyst Control Center (Administrative)
+ Comment=Allows the configuration of the ATI graphics hardware settings that requires administrative access.
+ Name[cs]=ATI Catalyst Control Center (správce)

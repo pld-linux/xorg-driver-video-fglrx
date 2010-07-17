@@ -1,0 +1,65 @@
+--- lib/modules/fglrx/build_mod/firegl_public.c.orig	2008-12-04 23:56:18.000000000 +0100
++++ lib/modules/fglrx/build_mod/firegl_public.c	2008-12-16 10:38:36.413113059 +0100
+@@ -245,7 +245,7 @@
+ const char BUILD_KERNEL_HAS_MODVERSIONS_CLEARED;
+ #endif
+ 
+-#ifdef __SMP__
++#ifdef CONFIG_SMP
+ const unsigned long KCL_SYSINFO_SmpSupport = 1;
+ const char BUILD_KERNEL_HAS_SMP_SET;
+ #else
+@@ -2256,7 +2256,7 @@
+  * kernel <  2.6.27, on_each_cpu has 4 parameters.
+  * kernel >= 2.6.27, on_each_cpu has 3 parameters (removed the "retry" parameter)
+  */
+-#if defined(__x86_64__) && defined(__SMP__) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,25)) 
++#if defined(__x86_64__) && defined(CONFIG_SMP) && (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,25)) 
+ #   if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,27))
+         on_each_cpu(KCL_flush_tlb_one, &va, 1, 1);
+ #   else
+@@ -2503,7 +2503,7 @@
+ 
+ /*****************************************************************************/
+ 
+-#ifdef __SMP__
++#ifdef CONFIG_SMP
+ static atomic_t cpus_waiting;
+ 
+ static void deferred_flush(void* contextp)
+@@ -2519,7 +2519,7 @@
+ 	while (atomic_read(&cpus_waiting) > 0)
+ 		barrier();
+ }
+-#endif /* __SMP__ */
++#endif /* CONFIG_SMP */
+ 
+ /** \brief Run a function on all other CPUs.
+  * \param func The function to run.
+@@ -2535,7 +2535,7 @@
+ 
+ int ATI_API_CALL KCL_MEM_FlushCpuCaches(void)
+ {
+-#ifdef __SMP__
++#ifdef CONFIG_SMP
+     /* write back invalidate all other CPUs (exported by kernel) */
+ 	if (KCL_SmpCallFunction(deferred_flush, NULL, 1, 0) != 0)
+ 		panic("timed out waiting for the other CPUs!\n");
+@@ -2551,7 +2551,7 @@
+ 
+ 	while (atomic_read(&cpus_waiting) > 0)
+ 		barrier();
+-#else /* !__SMP__ */
++#else /* !CONFIG_SMP */
+ #if defined(__i386__) || defined(__x86_64__)
+ 	asm volatile ("wbinvd":::"memory");
+ #elif defined(__alpha__) || defined(__sparc__)
+@@ -2559,7 +2559,7 @@
+ #else
+ #error "Please define flush_cache for your architecture."
+ #endif
+-#endif /* !__SMP__ */
++#endif /* !CONFIG_SMP */
+ 
+     //for kernel 2.6.25, tlb_flush has been included when calling set_pages_*.
+     #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,25)

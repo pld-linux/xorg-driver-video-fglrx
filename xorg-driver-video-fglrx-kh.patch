@@ -1,0 +1,11 @@
+--- xorg-driver-video-fglrx-8.10/common/lib/modules/fglrx/build_mod/make.sh.orig	2008-10-14 17:25:30.000000000 +0200
++++ xorg-driver-video-fglrx-8.10/common/lib/modules/fglrx/build_mod/make.sh	2008-10-18 00:39:08.000000000 +0200
+@@ -62,7 +62,7 @@
+ # ==============================================================
+ # system/kernel identification
+ 
+-uname_r=`uname -r`
++uname_r=`rpm -q kernel-headers |awk -F- '{print $3}'`
+ uname_v=`uname -v`
+ 
+ # ==============================================================
