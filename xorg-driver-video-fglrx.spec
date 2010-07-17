@@ -54,25 +54,12 @@ BuildRequires:	xorg-lib-libXxf86vm-devel
 BuildRequires:	xorg-proto-recordproto-devel
 BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
+Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Requires:	xorg-xserver-server(videodrv-abi) <= 7.0
-Provides:	OpenGL = 2.0
-Provides:	OpenGL-GLX = 1.4
 Provides:	xorg-xserver-module(glx)
-# hack to make OpenGL ABI compatible
-%ifarch %{x8664}
-Provides:	libGL.so.1()(64bit)
-%else
-Provides:	libGL.so.1
-%endif
-%if !%{with multigl}
-Obsoletes:	Mesa
-Conflicts:	Mesa-libGL
-%endif
-Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
 Obsoletes:	X11-driver-firegl < 1:7.0.0
-Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
 Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
@@ -98,13 +85,41 @@ graficznych akceleratorów FireGL 8700/8800, E1, Z1/X1. Pakiet
 dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
 akcelerowany OpenGL.
 
+%package libs
+Summary:	OpenGL (GL and GLX) ATI/AMD libraries
+Summary(pl.UTF-8):	Biblioteki OpenGL (GL i GLX) ATI/AMD
+Group:		X11/Development/Libraries
+Requires(post,postun):	/sbin/ldconfig
+# 4.0 for Radeon HD 5000 Series
+Provides:	OpenGL = 3.3
+Provides:	OpenGL-GLX = 1.4
+%if %{without multigl}
+Obsoletes:	Mesa
+Conflicts:	Mesa-libGL
+%endif
+Obsoletes:	X11-OpenGL-core < 1:7.0.0
+Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
+Obsoletes:	XFree86-OpenGL-core < 1:7.0.0
+Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
+
+%description libs
+ATI/AMD OpenGL (GL and GLX only) implementation libraries.
+
+%description libs -l pl.UTF-8
+Implementacja OpenGL (tylko GL i GLX) firmy ATI/AMD.
+
 %package devel
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{pname} = %{epoch}:%{version}-%{release}
+Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 # or more?
 Requires:	xorg-proto-glproto-devel
+# 4.0 for Radeon HD 5000 Series
+Provides:	OpenGL-devel = 3.3
+Provides:	OpenGL-GLX-devel = 1.4
+Obsoletes:	X11-OpenGL-devel-base
+Obsoletes:	XFree86-OpenGL-devel-base
 
 %description devel
 Header files for development for the ATI proprietary driver for
@@ -238,15 +253,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with multigl}
 %post
-/sbin/ldconfig
 if [ ! -e %{_libdir}/xorg/modules/extensions/libglx.so ]; then
 	ln -sf libglx.so.%{version} %{_libdir}/xorg/modules/extensions/libglx.so
 fi
-%else
-%post	-p /sbin/ldconfig
 %endif
 
-%postun	-p /sbin/ldconfig
+%post	libs -p /sbin/ldconfig
+%postun	libs -p /sbin/ldconfig
 
 %post	-n kernel%{_alt_kernel}-video-firegl
 %depmod %{_kernel_ver}
@@ -270,6 +283,21 @@ fi
 %{_pixmapsdir}/*.xpm
 %{_datadir}/ati
 %if %{with multigl}
+%ghost %{_libdir}/xorg/modules/extensions/libglx.so
+%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so.%{version}
+%else
+%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
+%endif
+%{_libdir}/dri
+%attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
+%attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
+%attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
+%attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
+%attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
+
+%files libs
+%defattr(644,root,root,755)
+%if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
@@ -284,8 +312,6 @@ fi
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.1
-%ghost %{_libdir}/xorg/modules/extensions/libglx.so
-%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so.%{version}
 %else
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
@@ -301,14 +327,7 @@ fi
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
-%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
 %endif
-%{_libdir}/dri
-%attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
-%attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
-%attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
-%attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
-%attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
 
 %files devel
 %defattr(644,root,root,755)
