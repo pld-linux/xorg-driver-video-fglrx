@@ -39,11 +39,11 @@ License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
 # Source0-md5:	089967a9aa86ad596884d82bb0b3a382
-Source1:	%{pname}.desktop
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
 Patch2:		%{pname}-x86genericarch.patch
 Patch3:		fglrx-2.6.34-rc4.patch
+Patch4:		%{pname}-desktop.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -165,14 +165,13 @@ sh %{SOURCE0} --extract .
 
 cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
-cd common
 %if %{with dist_kernel}
-%patch0 -p2
+%patch0 -p1
 %patch1 -p0
 %patch2 -p0
 %endif
-%patch3 -p2
-cd -
+%patch3 -p1
+%patch4 -p1
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
@@ -211,8 +210,9 @@ cp -r common%{_sysconfdir}/ati/amdpcsdb.default $RPM_BUILD_ROOT%{_sysconfdir}/at
 cp -r common%{_sysconfdir}/ati/atiogl.xml $RPM_BUILD_ROOT%{_sysconfdir}/ati/atiogl.xml
 
 cp -r common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
-cp -r %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 cp -r common%{_datadir}/icons/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
+
+cp -r common%{_desktopdir}/*.desktop $RPM_BUILD_ROOT%{_desktopdir}
 
 %if %{with multigl}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/ld.so.conf.d,%{_libdir}/fglrx}
