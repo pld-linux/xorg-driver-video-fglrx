@@ -1,5 +1,5 @@
---- lib/modules/fglrx/build_mod/firegl_public.c.orig	2008-12-04 23:56:18.000000000 +0100
-+++ lib/modules/fglrx/build_mod/firegl_public.c	2008-12-16 10:38:36.413113059 +0100
+--- common/lib/modules/fglrx/build_mod/firegl_public.c.orig	2008-12-04 23:56:18.000000000 +0100
++++ common/lib/modules/fglrx/build_mod/firegl_public.c	2008-12-16 10:38:36.413113059 +0100
 @@ -245,7 +245,7 @@
  const char BUILD_KERNEL_HAS_MODVERSIONS_CLEARED;
  #endif
