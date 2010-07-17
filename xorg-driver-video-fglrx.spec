@@ -54,12 +54,12 @@ BuildRequires:	xorg-lib-libXxf86vm-devel
 BuildRequires:	xorg-proto-recordproto-devel
 BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
-Requires:	%{pname}-libglx = %{epoch}:%{version}-%{release}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Requires:	xorg-xserver-server(videodrv-abi) <= 7.0
 Provides:	OpenGL = 2.0
 Provides:	OpenGL-GLX = 1.4
+Provides:	xorg-xserver-module(glx)
 # hack to make OpenGL ABI compatible
 %ifarch %{x8664}
 Provides:	libGL.so.1()(64bit)
@@ -75,6 +75,9 @@ Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
 Obsoletes:	xorg-driver-video-fglrx-libdri
+Obsoletes:	xorg-driver-video-fglrx-libglx
+Conflicts:	xorg-driver-video-nvidia
+Conflicts:	xorg-xserver-libglx
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -92,20 +95,6 @@ Sterowniki do kart graficznych ATI Radeon 8500, 9700, Mobility M9 oraz
 graficznych akceleratorów FireGL 8700/8800, E1, Z1/X1. Pakiet
 dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
 akcelerowany OpenGL.
-
-%package libglx
-Summary:	GLX extension library for X.org server with fglrx driver
-Summary(pl.UTF-8):	Biblioteka rozszerzenia GLX dla serwera X.org ze sterownikiem fglrx
-Group:		X11/Servers
-Provides:	xorg-xserver-module(glx)
-Conflicts:	xorg-driver-video-nvidia
-Conflicts:	xorg-xserver-libglx
-
-%description libglx
-GLX extension library for X.org server with fglrx driver.
-
-%description libglx -l pl.UTF-8
-Biblioteka rozszerzenia GLX dla serwera X.org with fglrx driver.
 
 %package devel
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
@@ -297,16 +286,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
 %endif
+%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
 %{_libdir}/dri
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
-
-%files libglx
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
 
 %files devel
 %defattr(644,root,root,755)
