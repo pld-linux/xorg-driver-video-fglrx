@@ -76,8 +76,10 @@ Obsoletes:	XFree86-OpenGL-libGL < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
 Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
+%if %{without multigl}
 Conflicts:	xorg-driver-video-nvidia
 Conflicts:	xorg-xserver-libglx
+%endif
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -205,6 +207,9 @@ echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
 cp -r common%{_libdir}/lib*.a $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_libdir}/lib*.so* $RPM_BUILD_ROOT%{_libdir}/fglrx
 
+mv -f $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/{libglx.so,libglx.so.%{version}}
+ln -sf libglx.so.%{version} $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/libglx.so
+
 /sbin/ldconfig -n $RPM_BUILD_ROOT%{_libdir}/fglrx
 ln -sf fglrx/libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 %else
@@ -231,7 +236,16 @@ done
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with multigl}
+%post
+/sbin/ldconfig
+if [ ! -e %{_libdir}/xorg/modules/extensions/libglx.so ]; then
+	ln -sf libglx.so.%{version} %{_libdir}/xorg/modules/extensions/libglx.so
+fi
+%else
 %post	-p /sbin/ldconfig
+%endif
+
 %postun	-p /sbin/ldconfig
 
 %post	-n kernel%{_alt_kernel}-video-firegl
@@ -270,6 +284,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.1
+%ghost %{_libdir}/xorg/modules/extensions/libglx.so
+%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so.%{version}
 %else
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
@@ -285,8 +301,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
 %attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
-%endif
 %attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
+%endif
 %{_libdir}/dri
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
