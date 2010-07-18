@@ -395,7 +395,6 @@ fi
 %defattr(644,root,root,755)
 %{_libdir}/libfglrx_dm.a
 %{_libdir}/libfglrx_gamma.a
-%endif
 
 %files atieventsd
 %defattr(644,root,root,755)
@@ -405,6 +404,7 @@ fi
 %attr(755,root,root) %{_sysconfdir}/acpi/ati-powermode.sh
 %{_sysconfdir}/acpi/events/*
 %{_mandir}/man8/atieventsd.8*
+%endif
 
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-video-firegl
