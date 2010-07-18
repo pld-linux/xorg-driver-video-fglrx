@@ -1,0 +1,14 @@
+--- xorg-driver-video-fglrx-10.6/common/usr/share/doc/fglrx/examples/etc/acpi/ati-powermode.sh~	2010-06-03 16:23:55.000000000 +0200
++++ xorg-driver-video-fglrx-10.6/common/usr/share/doc/fglrx/examples/etc/acpi/ati-powermode.sh	2010-07-18 02:11:03.418137840 +0200
+@@ -5,9 +5,9 @@
+ #
+ 
+ getXuser() {
+-        user=`finger| grep -m1 ":$displaynum " | awk '{print $1}'`
++        user=`who | grep -m1 ":$displaynum" | awk '{print $1}'`
+         if [ x"$user" = x"" ]; then
+-                user=`finger| grep -m1 ":$displaynum" | awk '{print $1}'`
++                user=`who | grep -m1 ":$displaynum " | awk '{print $1}'`
+         fi
+         if [ x"$user" != x"" ]; then
+                 userhome=`getent passwd $user | cut -d: -f6`
