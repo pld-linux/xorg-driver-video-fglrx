@@ -13,11 +13,11 @@
 # Source function library
 . /etc/rc.d/init.d/functions
 
-# Get service config - may override defaults
-[ -f /etc/sysconfig/atieventsd ] && . /etc/sysconfig/atieventsd
-
 DAEMONOPTS=""
 DAEMONXAUTHFILE=/var/run/$DAEMONNAME.Xauthority
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/atieventsd ] && . /etc/sysconfig/atieventsd
 
 start() {
 	# Check if the service is already running?
