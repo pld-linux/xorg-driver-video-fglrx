@@ -1,0 +1,87 @@
+#!/bin/sh
+#
+# atieventsd	ATI External Events Daemon
+#
+# chkconfig:	345 50 50
+#
+# description:	ATI External Events Daemon
+#
+# processname:	atieventsd
+# config:
+# pidfile:	/var/run/atieventsd.pid
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/atieventsd ] && . /etc/sysconfig/atieventsd
+
+DAEMONOPTS=""
+DAEMONXAUTHFILE=/var/run/$DAEMONNAME.Xauthority
+
+start() {
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/atieventsd ]; then
+		msg_already_running "atieventsd"
+		return
+	fi
+
+	msg_starting "atieventsd"
+        XAUTHORITY=$DAEMONXAUTHFILE daemon /usr/sbin/atieventsd $DAEMONOPTS
+	pidofproc atieventsd > /var/run/atieventsd.pid 
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/atieventsd
+}
+
+stop() {
+	if [ ! -f /var/lock/subsys/atieventsd ]; then
+		msg_not_running "atieventsd"
+		return
+	fi
+
+	# Stop daemons.
+	msg_stopping "atieventsd"
+	killproc --pidfile /var/run/atieventsd.pid atieventsd
+	rm -f /var/lock/subsys/atieventsd
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/atieventsd ]; then
+		msg_not_running "atieventsd"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
+	;;
+  status)
+	status atieventsd
+	RETVAL=$?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL
