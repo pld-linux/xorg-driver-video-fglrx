@@ -1,0 +1,7 @@
+# Customized settings for atieventsd
+
+# Define nice level for atieventsd
+SERVICE_RUN_NICE_LEVEL="+0"
+
+# ATI External Events Daemon options
+#DAEMONOPTS=
