@@ -1,7 +1,4 @@
 #
-# TODO:
-#	- properly package atieventsd and acpi stuff
-#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -30,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	2
+%define		rel	3
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -42,11 +39,15 @@ License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
 # Source0-md5:	089967a9aa86ad596884d82bb0b3a382
+Source1:	atieventsd.init
+Source2:	atieventsd.sysconfig
+Source3:	gl.pc.in
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
 Patch2:		%{pname}-x86genericarch.patch
 Patch3:		fglrx-2.6.34-rc4.patch
 Patch4:		%{pname}-desktop.patch
+Patch5:		%{pname}-nofinger.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -146,6 +147,27 @@ ATI Radeon graphic cards.
 Biblioteki statyczne do programowania z użyciem własnościowego
 sterownika ATI dla kart graficznych ATI Radeon.
 
+%package atieventsd
+Summary:	ATI external events daemon
+Summary(pl.UTF-8):	Demon zezewnętrznych zdarzeń ATI
+Group:		Daemons
+Requires:	%{pname} = %{epoch}:%{version}-%{rel}
+Requires:	acpid
+Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
+
+%description atieventsd
+The ATI External Events Daemon is a user-level application
+that monitors various system events such as ACPI or hotplug,
+then notifies the driver via the X extensions interface that
+the event has occured.
+
+%description atieventsd -l pl.UTF-8
+Demon zewnętrznych zdarzeń ATI jest aplikacją monitorującą
+różne zdarzenia systemowe, takie jak ACPI lub hotplug, a
+następnie informującą sterownik poprzez interfejs rozszerzeń X,
+że zaszło zdarzenie.
+
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
 Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
@@ -175,6 +197,7 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %endif
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
@@ -201,7 +224,12 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_sbindir}} \
 	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_mandir}/man8} \
-	$RPM_BUILD_ROOT{%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}}
+	$RPM_BUILD_ROOT{%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}} \
+	$RPM_BUILD_ROOT/etc/{sysconfig,rc.d/init.d}
+
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/atieventsd
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/atieventsd
+cp -r common%{_datadir}/doc/fglrx/examples/etc/acpi $RPM_BUILD_ROOT/etc
 
 install common%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
 install common/usr/X11R6/bin/* $RPM_BUILD_ROOT%{_bindir}
@@ -257,6 +285,10 @@ for f in libfglrx_dm libfglrx_gamma; do
 done
 %endif
 
+install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
+sed -e 's|@@prefix@@|%{_prefix}|g;s|@@libdir@@|%{_libdir}|g;s|@@includedir@@|%{_includedir}|g;s|@@version@@|%{version}|g' < %{SOURCE3} \
+	> $RPM_BUILD_ROOT%{_pkgconfigdir}/gl.pc
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -269,6 +301,16 @@ fi
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
+
+%post atieventsd
+/sbin/chkconfig --add atieventsd
+%service atieventsd restart
+
+%preun atieventsd
+if [ "$1" = "0" ]; then
+	%service -q atieventsd stop
+	/sbin/chkconfig --del atieventsd
+fi
 
 %post	-n kernel%{_alt_kernel}-video-firegl
 %depmod %{_kernel_ver}
@@ -287,11 +329,10 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/atiogl.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_sbindir}/amdnotifyui
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.xpm
 %{_datadir}/ati
-%{_mandir}/man8/*.8*
 %if %{with multigl}
 %ghost %{_libdir}/xorg/modules/extensions/libglx.so
 %attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so.%{version}
@@ -348,12 +389,22 @@ fi
 %if %{with multigl}
 %attr(755,root,root) %{_libdir}/libGL.so
 %endif
+%{_pkgconfigdir}/gl.pc
 
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libfglrx_dm.a
 %{_libdir}/libfglrx_gamma.a
 %endif
+
+%files atieventsd
+%defattr(644,root,root,755)
+%attr(754,root,root) /etc/rc.d/init.d/atieventsd
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/atieventsd
+%attr(755,root,root) %{_sbindir}/atieventsd
+%attr(755,root,root) %{_sysconfdir}/acpi/ati-powermode.sh
+%{_sysconfdir}/acpi/events/*
+%{_mandir}/man8/atieventsd.8*
 
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-video-firegl
