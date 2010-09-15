@@ -1,4 +1,7 @@
 #
+# TODO:
+#	- ABI 8 support, 10.9 still broken (undefined symbol: savedScreenInfo)
+#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
