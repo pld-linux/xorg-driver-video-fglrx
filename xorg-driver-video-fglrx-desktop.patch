@@ -4,7 +4,7 @@
  Type=Application
  Exec=amdcccle
  Icon=ccc_large
--Categories=GNOME;KDE;Qt;HardwareSettings;Settings;
+-Categories=GNOME;KDE;GTK;Qt;HardwareSettings;Settings;
 -
 -
 +Terminal=false
@@ -18,7 +18,7 @@
  Encoding=UTF-8
  Type=Application
  Exec=amdxdg-su -c amdcccle
--Categories=GNOME;KDE;Qt;HardwareSettings;Settings;
+-Categories=GNOME;KDE;GTK;Qt;HardwareSettings;Settings;
 +Categories=Qt;HardwareSettings;Settings;
  Icon=ccc_large
 -

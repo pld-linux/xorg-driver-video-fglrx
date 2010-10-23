@@ -1,7 +1,4 @@
 #
-# TODO:
-#	- ABI 8 support, 10.9 still broken (undefined symbol: savedScreenInfo)
-#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -9,7 +6,7 @@
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	multigl		# package libGL in a way allowing concurrent install with nvidia/fglrx drivers
 
-%define		x11ver		x750
+%define		x11ver		x760
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -30,18 +27,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	5
+%define		rel	1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	10.7
+Version:	10.10
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	0855d05f303a442aa493c8542e2993ef
+# Source0-md5:	d8e6b65b2e5e18b834287eb79cf086b3
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -63,7 +60,7 @@ BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
-Requires:	xorg-xserver-server(videodrv-abi) <= 7.0
+Requires:	xorg-xserver-server(videodrv-abi) <= 8.0
 Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
@@ -78,7 +75,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_ccver	%(rpm -q --qf "%{VERSION}" gcc | sed 's/\\..*//')
 
-%define		_noautoreqdep	libGL.so.1
+%define		_noautoreqdep			libGL.so.1
+%define		no_install_post_check_so	1
 
 %description
 Display driver files for the ATI Radeon 8500, 9700, Mobility M9 and
