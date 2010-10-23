@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	2
+%define		rel	3
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -47,6 +47,7 @@ Patch1:		%{pname}-smp.patch
 Patch2:		%{pname}-x86genericarch.patch
 Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
+Patch5:		%{pname}-GPL-only.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -197,6 +198,7 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %endif
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
