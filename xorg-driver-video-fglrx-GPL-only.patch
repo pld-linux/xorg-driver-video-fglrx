@@ -1,0 +1,11 @@
+--- xorg-driver-video-fglrx-10.10/common/lib/modules/fglrx/build_mod/kcl_ioctl.c~	2010-10-19 23:41:18.000000000 +0200
++++ xorg-driver-video-fglrx-10.10/common/lib/modules/fglrx/build_mod/kcl_ioctl.c	2010-10-23 03:39:08.144926999 +0200
+@@ -193,7 +193,7 @@
+  */
+ void* ATI_API_CALL KCL_IOCTL_AllocUserSpace32(long size)
+ {
+-    void __user *ret = COMPAT_ALLOC_USER_SPACE(size);
++    void __user *ret = arch_compat_alloc_user_space(size);
+ 
+     /* prevent stack overflow */
+     if (!access_ok(VERIFY_WRITE, ret, size))
