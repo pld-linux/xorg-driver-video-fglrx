@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	4
+%define		rel	5
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -343,6 +343,7 @@ fi
 %{_libdir}/dri
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
+%dir %{_libdir}/xorg/modules/linux
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
