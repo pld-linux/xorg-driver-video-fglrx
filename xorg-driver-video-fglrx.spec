@@ -42,6 +42,7 @@ Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
+Source4:    10-fglrx.conf
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
 Patch2:		%{pname}-x86genericarch.patch
@@ -223,13 +224,14 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d},%{_bindir},%{_sbindir}} \
+install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d,X11/xorg.conf.d},%{_bindir},%{_sbindir}} \
 	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_mandir}/man8} \
 	$RPM_BUILD_ROOT{%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}} \
 	$RPM_BUILD_ROOT/etc/{sysconfig,rc.d/init.d}
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/atieventsd
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/atieventsd
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
 cp -r common%{_datadir}/doc/fglrx/examples/etc/acpi $RPM_BUILD_ROOT/etc
 
 install common%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
@@ -329,6 +331,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/amdpcsdb.default
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/atiogl.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
+%{_sysconfdir}/X11/xorg.cond.d/10-fglrx.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/amdnotifyui
 %{_desktopdir}/*.desktop
