@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	5
+%define		rel	6
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -64,6 +64,7 @@ Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Requires:	xorg-xserver-server(videodrv-abi) <= 8.0
 Suggests:	kernel-video-firegl
+Suggests:	%{name}-config
 Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
@@ -170,6 +171,16 @@ Demon zewnętrznych zdarzeń ATI jest aplikacją monitorującą
 różne zdarzenia systemowe, takie jak ACPI lub hotplug, a
 następnie informującą sterownik poprzez interfejs rozszerzeń X,
 że zaszło zdarzenie.
+
+%package config
+Summary:	Xorg configuration file to use fglrx module
+Group:		X11
+Requires:	%{name} = %{epoch}:%{version}-%{rel}
+
+%description config
+Without configuration file Xorg doesn't use fglrx module. If you want
+to use it you should install this package or create own configuration
+file.
 
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
@@ -332,7 +343,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/amdpcsdb.default
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/atiogl.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
-%{_sysconfdir}/X11/xorg.cond.d/10-fglrx.conf
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/amdnotifyui
 %{_desktopdir}/*.desktop
@@ -411,6 +421,10 @@ fi
 %{_sysconfdir}/acpi/events/*
 %{_mandir}/man8/atieventsd.8*
 %endif
+
+%files config
+%defattr(644,root,root,755)
+%{_sysconfdir}/X11/xorg.conf.d/10-fglrx.conf
 
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-video-firegl
