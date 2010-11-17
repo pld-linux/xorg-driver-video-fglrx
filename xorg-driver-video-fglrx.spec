@@ -174,6 +174,7 @@ zdarzenie.
 
 %package config
 Summary:	Xorg configuration file to use fglrx module
+Summary(pl.UTF-8):	Plik konfiguracyjny modułu fglrx dla Xorg
 Group:		X11
 Requires:	%{name} = %{epoch}:%{version}-%{rel}
 
@@ -181,6 +182,11 @@ Requires:	%{name} = %{epoch}:%{version}-%{rel}
 Without configuration file Xorg doesn't use fglrx module. If you want
 to use it you should install this package or create own configuration
 file.
+
+%description config -l pl.UTF-8
+Bez odpowiedniej konfiguracji Xorg nie będzie używał modułu fglrx. Aby
+to umożliwić należy zainstalować tą paczkę lub stworzyć własny plik
+konfiguracyjny.
 
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
