@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	8
+%define		rel	9
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -49,6 +49,7 @@ Patch2:		%{pname}-x86genericarch.patch
 Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
+Patch6:		%{pname}-ioctl.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
@@ -61,10 +62,10 @@ BuildRequires:	xorg-proto-xf86miscproto-devel
 BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Requires:	xorg-xserver-server(videodrv-abi) <= 8.0
-Suggests:	kernel-video-firegl
+Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	%{name}-config
+Suggests:	kernel-video-firegl
 Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
@@ -124,14 +125,14 @@ Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 # or more?
 Requires:	xorg-proto-glproto-devel
 # 4.0 for Radeon HD 5000 Series
-Provides:	OpenGL-devel = 3.3
 Provides:	OpenGL-GLX-devel = 1.4
+Provides:	OpenGL-devel = 3.3
 Obsoletes:	X11-OpenGL-devel-base
 Obsoletes:	XFree86-OpenGL-devel-base
 
 %description devel
-Header files for development for the ATI proprietary driver for
-ATI Radeon graphic cards.
+Header files for development for the ATI proprietary driver for ATI
+Radeon graphic cards.
 
 %description devel -l pl.UTF-8
 Pliki nagłówkowe do programowania z użyciem własnościowego sterownika
@@ -161,16 +162,15 @@ Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
 
 %description atieventsd
-The ATI External Events Daemon is a user-level application
-that monitors various system events such as ACPI or hotplug,
-then notifies the driver via the X extensions interface that
-the event has occured.
+The ATI External Events Daemon is a user-level application that
+monitors various system events such as ACPI or hotplug, then notifies
+the driver via the X extensions interface that the event has occured.
 
 %description atieventsd -l pl.UTF-8
-Demon zewnętrznych zdarzeń ATI jest aplikacją monitorującą
-różne zdarzenia systemowe, takie jak ACPI lub hotplug, a
-następnie informującą sterownik poprzez interfejs rozszerzeń X,
-że zaszło zdarzenie.
+Demon zewnętrznych zdarzeń ATI jest aplikacją monitorującą różne
+zdarzenia systemowe, takie jak ACPI lub hotplug, a następnie
+informującą sterownik poprzez interfejs rozszerzeń X, że zaszło
+zdarzenie.
 
 %package config
 Summary:	Xorg configuration file to use fglrx module
@@ -212,6 +212,7 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
