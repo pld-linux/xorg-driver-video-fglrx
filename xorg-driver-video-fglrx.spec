@@ -155,7 +155,7 @@ sterownika ATI dla kart graficznych ATI Radeon.
 
 %package atieventsd
 Summary:	ATI external events daemon
-Summary(pl.UTF-8):	Demon zezewnętrznych zdarzeń ATI
+Summary(pl.UTF-8):	Demon zewnętrznych zdarzeń ATI
 Group:		Daemons
 Requires:	%{pname} = %{epoch}:%{version}-%{rel}
 Requires:	acpid
