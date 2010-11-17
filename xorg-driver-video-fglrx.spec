@@ -27,18 +27,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	9
+%define		rel	1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	10.10
+Version:	10.11
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	d8e6b65b2e5e18b834287eb79cf086b3
+# Source0-md5:	e2304b649b0894e3a904cd0c45bfbcc3
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -51,16 +51,9 @@ Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch6:		%{pname}-ioctl.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
-%{?with_userspace:BuildRequires:	OpenGL-GLU-devel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
-%{?with_userspace:BuildRequires:	qt-devel}
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
-BuildRequires:	xorg-lib-libXmu-devel
-BuildRequires:	xorg-lib-libXxf86vm-devel
-BuildRequires:	xorg-proto-recordproto-devel
-BuildRequires:	xorg-proto-xf86miscproto-devel
-BuildRequires:	xorg-proto-xf86vidmodeproto-devel
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) <= 8.0
