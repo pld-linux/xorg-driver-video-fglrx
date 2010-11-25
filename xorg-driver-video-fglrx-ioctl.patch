@@ -12,3 +12,15 @@
      mmap:    ip_firegl_mmap,
  
      write:   ip_firegl_write,
+@@ -320,7 +320,11 @@
+     return firegl_release((KCL_IO_FILE_Handle)filp);
+ }
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36)
+ int ip_firegl_ioctl(struct inode* inode, struct file* filp, unsigned int cmd, unsigned long arg)
++#else
++int ip_firegl_ioctl(struct file* filp, unsigned int cmd, unsigned long arg)
++#endif
+ {
+     return firegl_ioctl((KCL_IO_FILE_Handle)filp, cmd, arg);
+ }
