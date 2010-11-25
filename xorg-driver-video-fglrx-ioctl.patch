@@ -1,17 +1,5 @@
 --- xorg-driver-video-fglrx-10.10/common/lib/modules/fglrx/build_mod/firegl_public.c~	2010-11-17 10:46:01.173842668 +0100
 +++ xorg-driver-video-fglrx-10.10/common/lib/modules/fglrx/build_mod/firegl_public.c	2010-11-17 10:48:58.657176001 +0100
-@@ -404,7 +404,11 @@
- #endif
-     open:    ip_firegl_open,
-     release: ip_firegl_release,
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36)
-     ioctl:   ip_firegl_ioctl,
-+#else
-+    unlocked_ioctl: ip_firegl_ioctl,
-+#endif
-     mmap:    ip_firegl_mmap,
- 
-     write:   ip_firegl_write,
 @@ -320,7 +320,11 @@
      return firegl_release((KCL_IO_FILE_Handle)filp);
  }
@@ -24,3 +12,15 @@
  {
      return firegl_ioctl((KCL_IO_FILE_Handle)filp, cmd, arg);
  }
+@@ -404,7 +404,11 @@
+ #endif
+     open:    ip_firegl_open,
+     release: ip_firegl_release,
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36)
+     ioctl:   ip_firegl_ioctl,
++#else
++    unlocked_ioctl: ip_firegl_ioctl,
++#endif
+     mmap:    ip_firegl_mmap,
+ 
+     write:   ip_firegl_write,
