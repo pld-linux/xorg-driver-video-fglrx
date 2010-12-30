@@ -27,18 +27,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	8
+%define		rel	1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	10.11
+Version:	10.12
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	e2304b649b0894e3a904cd0c45bfbcc3
+# Source0-md5:	debf1518bd58c49b49aafddbae60b748
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
