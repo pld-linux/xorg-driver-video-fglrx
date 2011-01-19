@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	2
+%define		rel	3
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -50,6 +50,7 @@ Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch6:		%{pname}-ioctl.patch
+Patch7:		%{pname}-sema_init.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
@@ -213,13 +214,14 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
-cp -r arch/%{arch_dir}/usr/%{_lib}/*.so.* common%{_libdir}
+cp -r arch/%{arch_dir}/usr/%{_lib}/*.so* common%{_libdir}
 
 %build
 %if %{with kernel}
@@ -374,6 +376,9 @@ fi
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
+%attr(755,root,root) %{_libdir}/fglrx/libaticalcl.so
+%attr(755,root,root) %{_libdir}/fglrx/libaticaldd.so
+%attr(755,root,root) %{_libdir}/fglrx/libaticalrt.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiuki.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
@@ -387,6 +392,9 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libXvBAW.so.1
 %{_libdir}/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/libatiadlxx.so
+%attr(755,root,root) %{_libdir}/libaticalcl.so
+%attr(755,root,root) %{_libdir}/libaticaldd.so
+%attr(755,root,root) %{_libdir}/libaticalrt.so
 %attr(755,root,root) %{_libdir}/libatiuki.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libatiuki.so.1
 %attr(755,root,root) %{_libdir}/libGL.so.*.*
