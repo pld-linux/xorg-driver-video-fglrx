@@ -272,6 +272,7 @@ echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
 
 cp -r common%{_libdir}/lib*.a $RPM_BUILD_ROOT%{_libdir}
 cp -r common%{_libdir}/lib*.so* $RPM_BUILD_ROOT%{_libdir}/fglrx
+cp -r common%{_libdir}/lib*.cap $RPM_BUILD_ROOT%{_libdir}/fglrx
 
 mv -f $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/{libglx.so,libglx.so.%{version}}
 ln -sf libglx.so.%{version} $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/libglx.so
