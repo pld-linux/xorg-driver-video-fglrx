@@ -53,12 +53,12 @@ URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
-Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
+Requires:	%{pname}%{_alt_kernel}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) <= 8.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	%{name}-config
-Suggests:	kernel-video-firegl
+Suggests:	kernel%{_alt_kernel}-video-firegl
 Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
