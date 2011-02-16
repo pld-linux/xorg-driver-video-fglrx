@@ -426,11 +426,11 @@ fi
 %attr(755,root,root) %{_sysconfdir}/acpi/ati-powermode.sh
 %{_sysconfdir}/acpi/events/*
 %{_mandir}/man8/atieventsd.8*
-%endif
 
 %files config
 %defattr(644,root,root,755)
 %{_sysconfdir}/X11/xorg.conf.d/10-fglrx.conf
+%endif
 
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-video-firegl
