@@ -6,7 +6,7 @@
 %bcond_with	verbose		# verbose build (V=1)
 %bcond_with	multigl		# package libGL in a way allowing concurrent install with nvidia/fglrx drivers
 
-%define		x11ver		x760
+%define		x11ver		xpic
 
 %if %{without kernel}
 %undefine	with_dist_kernel
@@ -27,18 +27,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	8
+%define		rel	1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}
-Version:	11.1
+Version:	11.2
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	f28f358b3a40a0a06e16f45925d9a875
+# Source0-md5:	4db782c2a7924b965918275c39157a28
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
