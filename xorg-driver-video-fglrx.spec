@@ -49,7 +49,7 @@ Patch2:		%{pname}-x86genericarch.patch
 Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
-Patch6:     2.6.38_console.patch
+Patch6:		2.6.38_console.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
@@ -223,13 +223,12 @@ cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
 cp -r arch/%{arch_dir}/usr/%{_lib}/*.so* common%{_libdir}
-cp -r arch/%{arch_dir}/lib/modules/fglrx/build_mod/libfglrx_ip.a common/lib/modules/fglrx/build_mod
 
 %build
 %if %{with kernel}
 cd common/lib/modules/fglrx/build_mod
 cp -f 2.6.x/Makefile .
-%build_kernel_modules -m fglrx GCC_VER_MAJ=%{_ccver}
+%build_kernel_modules -c -m fglrx GCC_VER_MAJ=%{_ccver}
 cd -
 %endif
 
@@ -293,11 +292,11 @@ ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
 %endif
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
-install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
+#install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 
 cd $RPM_BUILD_ROOT%{_libdir}
-for f in libfglrx_dm libfglrx_gamma; do
+for f in libfglrx_dm; do
 %if %{with multigl}
 	ln -s fglrx/$f.so.*.* $f.so
 %else
@@ -386,8 +385,6 @@ fi
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
-%attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.*.*
-%attr(755,root,root) %{_libdir}/fglrx/libfglrx_gamma.so.1
 %else
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
@@ -404,16 +401,12 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libGL.so.1
 %attr(755,root,root) %{_libdir}/libGL.so
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
-%attr(755,root,root) %{_libdir}/libfglrx_gamma.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libfglrx_gamma.so.1
 %endif
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libfglrx_dm.so
-%attr(755,root,root) %{_libdir}/libfglrx_gamma.so
 %{_includedir}/GL
-%{_includedir}/X11/extensions/fglrx_gamma.h
 %if %{with multigl}
 %attr(755,root,root) %{_libdir}/libGL.so
 %endif
@@ -422,7 +415,6 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libfglrx_dm.a
-%{_libdir}/libfglrx_gamma.a
 
 %files atieventsd
 %defattr(644,root,root,755)
