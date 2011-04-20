@@ -32,13 +32,13 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}
-Version:	11.2
+Version:	11.3
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	4db782c2a7924b965918275c39157a28
+# Source0-md5:	22d00ea687851f2be410f0776946f679
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -49,6 +49,7 @@ Patch2:		%{pname}-x86genericarch.patch
 Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
+Patch6:     2.6.38_console.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
@@ -214,6 +215,7 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 install -d common%{_prefix}/{%{_lib},bin,sbin}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
@@ -221,6 +223,7 @@ cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
 cp -r arch/%{arch_dir}/usr/%{_lib}/*.so* common%{_libdir}
+cp -r arch/%{arch_dir}/lib/modules/fglrx/build_mod/libfglrx_ip.a common/lib/modules/fglrx/build_mod
 
 %build
 %if %{with kernel}
