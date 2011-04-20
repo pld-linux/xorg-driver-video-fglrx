@@ -229,7 +229,7 @@ cp -r arch/%{arch_dir}/lib/modules/fglrx/build_mod/libfglrx_ip.a common/lib/modu
 %if %{with kernel}
 cd common/lib/modules/fglrx/build_mod
 cp -f 2.6.x/Makefile .
-%build_kernel_modules -m fglrx GCC_VER_MAJ=%{_ccver} -j1
+%build_kernel_modules -m fglrx GCC_VER_MAJ=%{_ccver}
 cd -
 %endif
 
