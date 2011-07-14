@@ -1,0 +1,33 @@
+Description: Add Linux 2.6.39 support
+ <linux/spinlock_types.h> had the following comment until 2.6.38:
+ .
+ /*
+  * SPIN_LOCK_UNLOCKED defeats lockdep state tracking and is hence
+  * deprecated.
+  * Please use DEFINE_SPINLOCK() or __SPIN_LOCK_UNLOCKED() as
+  * appropriate.
+  */
+ #define SPIN_LOCK_UNLOCKED     __SPIN_LOCK_UNLOCKED(old_style_spin_init)
+ .
+ This definition got removed in 2.6.39. Restore it locally until it gets fixed
+ upstream.
+Author: Miguel Colon <debian.micove@gmail.com>
+Forwarded: no
+Last-Update: 2011-03-30
+
+diff -Naur fglrx-driver-11-4.orig/common/lib/modules/fglrx/build_mod/firegl_public.c fglrx-driver-11-4/common/lib/modules/fglrx/build_mod/firegl_public.c
+--- fglrx-driver-11-4.orig/common/lib/modules/fglrx/build_mod/firegl_public.c	2011-04-27 21:48:43.000000000 +0200
++++ fglrx-driver-11-4/common/lib/modules/fglrx/build_mod/firegl_public.c	2011-04-27 21:49:36.000000000 +0200
+@@ -1060,7 +1060,12 @@
+     dev->pubdev.signature = FGL_DEVICE_SIGNATURE;
+ 
+     for (i = 0; i < __KE_MAX_SPINLOCKS; i++)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,39)
+         dev->spinlock[i] = SPIN_LOCK_UNLOCKED;
++#else
++        dev->spinlock[i] = __SPIN_LOCK_UNLOCKED(old_style_spin_init);
++#endif
++
+ 
+     for (i=0; i < __KE_MAX_SEMAPHORES; i++)
+         sema_init(&dev->struct_sem[i], 1);
