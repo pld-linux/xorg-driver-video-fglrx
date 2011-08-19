@@ -9,9 +9,9 @@
 -
 +Terminal=false
 +Categories=Qt;HardwareSettings;Settings;
- Name=ATI Catalyst Control Center
- Comment=Allows the configuration of the ATI graphics hardware settings.
- Name[cs]=ATI Catalyst Control Center
+ Name=AMD Catalyst Control Center
+ Comment=Allows the configuration of the AMD graphics hardware settings.
+ Name[cs]=AMD Catalyst Control Center
 --- xorg-driver-video-fglrx-10.6/common/usr/share/applications/amdccclesu.desktop~	2010-06-03 16:23:55.000000000 +0200
 +++ xorg-driver-video-fglrx-10.6/common/usr/share/applications/amdccclesu.desktop	2010-07-17 16:11:32.434382244 +0200
 @@ -2,9 +2,9 @@
@@ -23,6 +23,6 @@
  Icon=ccc_large
 -
 +Terminal=false
- Name=ATI Catalyst Control Center (Administrative)
- Comment=Allows the configuration of the ATI graphics hardware settings that requires administrative access.
- Name[cs]=ATI Catalyst Control Center (správce)
+ Name=AMD Catalyst Control Center (Administrative)
+ Comment=Allows the configuration of the AMD graphics hardware settings that requires administrative access.
+ Name[cs]=AMD Catalyst Control Center (správce)
