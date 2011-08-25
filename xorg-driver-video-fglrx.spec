@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	1
+%define		rel	2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
@@ -59,6 +59,7 @@ Requires:	xorg-xserver-server(videodrv-abi) <= 10.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	%{name}-config
 Suggests:	kernel-video-firegl
+Provides:	xorg-driver-video
 Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
