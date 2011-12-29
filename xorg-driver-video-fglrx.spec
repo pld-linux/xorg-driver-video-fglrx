@@ -32,13 +32,13 @@
 Summary:	Linux Drivers for ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
 Name:		%{pname}
-Version:	11.9
+Version:	11.12
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
 License:	ATI Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	2c6af8691b4d68709d0e0e04b96d0a3e
+# Source0-md5:	15c8148f916b2b9d37a5cbb189c6dda6
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -55,7 +55,7 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) <= 10.0
+Requires:	xorg-xserver-server(videodrv-abi) <= 11.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	%{name}-config
 Suggests:	kernel-video-firegl
@@ -216,7 +216,7 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %patch4 -p1
 %patch5 -p1
 
-install -d common%{_prefix}/{%{_lib},bin,sbin}
+install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
 mv common%{_libdir}/modules/extensions/{fglrx/fglrx-libglx.so,libglx.so}
 cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
@@ -225,6 +225,7 @@ cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
 cp -r arch/%{arch_dir}/usr/%{_lib}/*.so* common%{_libdir}
 mv common%{_libdir}/{fglrx/fglrx-libGL.so.1.2,libGL.so.1.2}
+cp -r arch/%{arch_dir}/etc/* common/etc
 
 %build
 %if %{with kernel}
@@ -245,12 +246,14 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d,X11/xorg.conf.d},%{_bindir},%{_sbindir}} \
 	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_mandir}/man8} \
 	$RPM_BUILD_ROOT{%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}} \
-	$RPM_BUILD_ROOT/etc/{sysconfig,rc.d/init.d}
+	$RPM_BUILD_ROOT/etc/{sysconfig,rc.d/init.d} \
+	$RPM_BUILD_ROOT%{_sysconfdir}/OpenCL/vendors
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/atieventsd
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/atieventsd
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
 cp -r common%{_datadir}/doc/fglrx/examples/etc/acpi $RPM_BUILD_ROOT/etc
+install -p common/etc/OpenCL/vendors/*.icd $RPM_BUILD_ROOT%{_sysconfdir}/OpenCL/vendors
 
 install common%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
 install common/usr/X11R6/bin/* $RPM_BUILD_ROOT%{_bindir}
@@ -371,14 +374,19 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
+%dir %{_sysconfdir}/OpenCL
+%dir %{_sysconfdir}/OpenCL/vendors
+%{_sysconfdir}/OpenCL/vendors/*.icd
 %if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.1
+%attr(755,root,root) %{_libdir}/fglrx/libOpenCL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
+%attr(755,root,root) %{_libdir}/fglrx/libamdocl*.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticalcl.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticaldd.so
@@ -390,9 +398,11 @@ fi
 %else
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
+%attr(755,root,root) %{_libdir}/libOpenCL.so.1
 %attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libXvBAW.so.1
 %{_libdir}/libAMDXvBA.cap
+%attr(755,root,root) %{_libdir}/libamdocl*.so
 %attr(755,root,root) %{_libdir}/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/libaticalcl.so
 %attr(755,root,root) %{_libdir}/libaticaldd.so
