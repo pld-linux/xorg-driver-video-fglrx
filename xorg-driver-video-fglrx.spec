@@ -49,6 +49,7 @@ Patch2:		%{pname}-x86genericarch.patch
 Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
+Patch6:		%{pname}-WARN.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
@@ -215,6 +216,7 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p0
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
