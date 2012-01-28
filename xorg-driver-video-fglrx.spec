@@ -27,18 +27,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	2
+%define		rel	1
 %define		pname		xorg-driver-video-fglrx
-Summary:	Linux Drivers for ATI graphics accelerators
-Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych ATI
+Summary:	Linux Drivers for AMD/ATI graphics accelerators
+Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}
-Version:	11.12
+Version:	12.1
 Release:	%{rel}%{?with_multigl:.mgl}
 Epoch:		1
-License:	ATI Binary (parts are GPL)
+License:	AMD Binary (parts are GPL)
 Group:		X11
-Source0:	http://dlmdownloads.ati.com/drivers/linux/ati-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	15c8148f916b2b9d37a5cbb189c6dda6
+Source0:	http://dlmdownloads.ati.com/drivers/linux/amd-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
+# Source0-md5:	6396d0f6f70b89d605bac896feb2b7c9
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -226,6 +226,7 @@ mv common%{_libdir}/modules/extensions/{fglrx/fglrx-libglx.so,libglx.so}
 cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
 cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/modules common%{_libdir}/xorg
 cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
+cp -r arch/%{arch_dir}/usr/bin/* common%{_bindir}
 cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
 cp -r arch/%{arch_dir}/usr/%{_lib}/*.so* common%{_libdir}
 mv common%{_libdir}/{fglrx/fglrx-libGL.so.1.2,libGL.so.1.2}
@@ -387,6 +388,8 @@ fi
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libOpenCL.so.1
+%attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerAg.so
+%attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerBe.so
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
@@ -403,6 +406,8 @@ fi
 %attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/libOpenCL.so.1
+%attr(755,root,root) %{_libdir}/libSlotMaximizerAg.so
+%attr(755,root,root) %{_libdir}/libSlotMaximizerBe.so
 %attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libXvBAW.so.1
 %{_libdir}/libAMDXvBA.cap
