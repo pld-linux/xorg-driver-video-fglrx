@@ -27,7 +27,7 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	2
+%define		rel	3
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
@@ -409,7 +409,9 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/libOpenCL.so.1
 %attr(755,root,root) %{_libdir}/libSlotMaximizerAg.so
+%ifarch %{ix86}
 %attr(755,root,root) %{_libdir}/libSlotMaximizerBe.so
+%endif
 %attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libXvBAW.so.1
 %{_libdir}/libAMDXvBA.cap
