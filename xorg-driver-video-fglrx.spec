@@ -4,7 +4,6 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
-%bcond_with	multigl		# package libGL in a way allowing concurrent install with nvidia/fglrx drivers
 
 %define		x11ver		xpic
 
@@ -27,13 +26,12 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel	4
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}
 Version:	12.1
-Release:	%{rel}%{?with_multigl:.mgl}
+Release:	5
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
@@ -43,6 +41,7 @@ Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
 Source4:	10-fglrx.conf
+Source5:	10-fglrx-modules.conf
 Patch0:		%{pname}-kh.patch
 Patch1:		%{pname}-smp.patch
 Patch2:		%{pname}-x86genericarch.patch
@@ -55,7 +54,7 @@ URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
-Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
+Requires:	%{pname}-libs = %{epoch}:%{version}-%{release}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) <= 11.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
@@ -67,10 +66,6 @@ Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
 Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
-%if %{without multigl}
-Conflicts:	xorg-driver-video-nvidia
-Conflicts:	xorg-xserver-libglx
-%endif
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -98,10 +93,6 @@ Requires(post,postun):	/sbin/ldconfig
 # 4.0 for Radeon HD 5000 Series
 Provides:	OpenGL = 3.3
 Provides:	OpenGL-GLX = 1.4
-%if %{without multigl}
-Obsoletes:	Mesa
-Conflicts:	Mesa-libGL
-%endif
 Obsoletes:	X11-OpenGL-core < 1:7.0.0
 Obsoletes:	X11-OpenGL-libGL < 1:7.0.0
 Obsoletes:	XFree86-OpenGL-core < 1:7.0.0
@@ -117,7 +108,7 @@ Implementacja OpenGL (tylko GL i GLX) firmy ATI/AMD.
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
+Requires:	%{pname}-libs = %{epoch}:%{version}-%{release}
 # or more?
 Requires:	xorg-proto-glproto-devel
 # 4.0 for Radeon HD 5000 Series
@@ -152,7 +143,7 @@ sterownika ATI dla kart graficznych ATI Radeon.
 Summary:	ATI external events daemon
 Summary(pl.UTF-8):	Demon zewnętrznych zdarzeń ATI
 Group:		Daemons
-Requires:	%{pname} = %{epoch}:%{version}-%{rel}
+Requires:	%{pname} = %{epoch}:%{version}-%{release}
 Requires:	acpid
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
@@ -172,7 +163,7 @@ zdarzenie.
 Summary:	Xorg configuration file to use fglrx module
 Summary(pl.UTF-8):	Plik konfiguracyjny modułu fglrx dla Xorg
 Group:		X11
-Requires:	%{name} = %{epoch}:%{version}-%{rel}
+Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description config
 Without configuration file Xorg doesn't use fglrx module. If you want
@@ -187,12 +178,12 @@ konfiguracyjny.
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
 Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
-Release:	%{rel}@%{_kernel_ver_str}
+Release:	%{release}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel}
 %if "%{_alt_kernel}" != "%{nil}"
-Provides:	kernel-video-firegl = %{epoch}:%{version}-%{rel}@%{_kernel_ver_str}
+Provides:	kernel-video-firegl = %{epoch}:%{version}-%{release}@%{_kernel_ver_str}
 %endif
 Requires(post,postun):	/sbin/depmod
 
@@ -248,15 +239,21 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %if %{with userspace}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/{ati,env.d,X11/xorg.conf.d},%{_bindir},%{_sbindir}} \
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/{ati,env.d,X11/xorg.conf.d,ld.so.conf.d} \
+	$RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_includedir}/GL} \
 	$RPM_BUILD_ROOT{%{_pixmapsdir},%{_desktopdir},%{_datadir}/ati,%{_mandir}/man8} \
-	$RPM_BUILD_ROOT{%{_libdir}/xorg/modules,%{_includedir}/{X11/extensions,GL}} \
+	$RPM_BUILD_ROOT%{_libdir}/{fglrx,xorg/modules/extensions/fglrx} \
 	$RPM_BUILD_ROOT/etc/{sysconfig,rc.d/init.d} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/OpenCL/vendors
 
+
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/atieventsd
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/atieventsd
+
 install %{SOURCE4} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
+sed -i -e 's|@@LIBDIR@@|%{_libdir}|g' $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/10-fglrx-modules.conf
+
 cp -r common%{_datadir}/doc/fglrx/examples/etc/acpi $RPM_BUILD_ROOT/etc
 install -p common/etc/OpenCL/vendors/*.icd $RPM_BUILD_ROOT%{_sysconfdir}/OpenCL/vendors
 
@@ -280,40 +277,18 @@ cp -r common%{_desktopdir}/*.desktop $RPM_BUILD_ROOT%{_desktopdir}
 
 cp -r common%{_mandir}/man8/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
-%if %{with multigl}
-install -d $RPM_BUILD_ROOT{%{_sysconfdir}/ld.so.conf.d,%{_libdir}/fglrx}
-
 echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
 
-cp -r common%{_libdir}/lib*.a $RPM_BUILD_ROOT%{_libdir}
-cp -r common%{_libdir}/lib*.so* $RPM_BUILD_ROOT%{_libdir}/fglrx
-cp -r common%{_libdir}/lib*.cap $RPM_BUILD_ROOT%{_libdir}/fglrx
+cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}/fglrx
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/{libglx.so,libglx.so.%{version}}
-ln -sf libglx.so.%{version} $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/libglx.so
+mv -f $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/{,fglrx}/libglx.so
 
 /sbin/ldconfig -n $RPM_BUILD_ROOT%{_libdir}/fglrx
-ln -sf fglrx/libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
-%else
-cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}
-
-/sbin/ldconfig -n $RPM_BUILD_ROOT%{_libdir}
-ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/libGL.so
-%endif
+ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/fglrx/libGL.so
+ln -sf libfglrx_dm.so.*.* $RPM_BUILD_ROOT%{_libdir}/fglrx/libfglrx_dm.so
 
 install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
-#install common/usr/X11R6/include/X11/extensions/*.h $RPM_BUILD_ROOT%{_includedir}/X11/extensions
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
-
-cd $RPM_BUILD_ROOT%{_libdir}
-for f in libfglrx_dm; do
-%if %{with multigl}
-	ln -s fglrx/$f.so.*.* $f.so
-%else
-	ln -s $f.so.*.* $f.so
-%endif
-done
-%endif
 
 install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 %{__sed} -e 's|@@prefix@@|%{_prefix}|g;s|@@libdir@@|%{_libdir}|g;s|@@includedir@@|%{_includedir}|g;s|@@version@@|%{version}|g' < %{SOURCE3} \
@@ -321,13 +296,6 @@ install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-%if %{with multigl}
-%post
-if [ ! -e %{_libdir}/xorg/modules/extensions/libglx.so ]; then
-	ln -sf libglx.so.%{version} %{_libdir}/xorg/modules/extensions/libglx.so
-fi
-%endif
 
 %post	libs -p /sbin/ldconfig
 %postun	libs -p /sbin/ldconfig
@@ -363,12 +331,8 @@ fi
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/*.xpm
 %{_datadir}/ati
-%if %{with multigl}
-%ghost %{_libdir}/xorg/modules/extensions/libglx.so
-%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so.%{version}
-%else
-%attr(755,root,root) %{_libdir}/xorg/modules/extensions/libglx.so
-%endif
+%dir %{_libdir}/xorg/modules/extensions/fglrx
+%attr(755,root,root) %{_libdir}/xorg/modules/extensions/fglrx/libglx.so
 %{_libdir}/dri
 %attr(755,root,root) %{_libdir}/xorg/modules/dri/fglrx_dri.so
 %attr(755,root,root) %{_libdir}/xorg/modules/drivers/fglrx_drv.so
@@ -382,18 +346,17 @@ fi
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %{_sysconfdir}/OpenCL/vendors/*.icd
-%if %{with multigl}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %dir %{_libdir}/fglrx
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
-%attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.1
+%attr(755,root,root) %ghost %{_libdir}/fglrx/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libOpenCL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerAg.so
 %ifarch %{ix86}
 %attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerBe.so
 %endif
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
-%attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.1
+%attr(755,root,root) %ghost %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/fglrx/libamdocl*.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
@@ -401,45 +364,21 @@ fi
 %attr(755,root,root) %{_libdir}/fglrx/libaticaldd.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticalrt.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiuki.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/fglrx/libatiuki.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libGL.so.*.*
-%attr(755,root,root) %{_libdir}/fglrx/libGL.so.1
+%attr(755,root,root) %ghost %{_libdir}/fglrx/libGL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so.*.*
-%else
-%attr(755,root,root) %{_libdir}/libAMDXvBA.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libAMDXvBA.so.1
-%attr(755,root,root) %{_libdir}/libOpenCL.so.1
-%attr(755,root,root) %{_libdir}/libSlotMaximizerAg.so
-%ifarch %{ix86}
-%attr(755,root,root) %{_libdir}/libSlotMaximizerBe.so
-%endif
-%attr(755,root,root) %{_libdir}/libXvBAW.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libXvBAW.so.1
-%{_libdir}/libAMDXvBA.cap
-%attr(755,root,root) %{_libdir}/libamdocl*.so
-%attr(755,root,root) %{_libdir}/libatiadlxx.so
-%attr(755,root,root) %{_libdir}/libaticalcl.so
-%attr(755,root,root) %{_libdir}/libaticaldd.so
-%attr(755,root,root) %{_libdir}/libaticalrt.so
-%attr(755,root,root) %{_libdir}/libatiuki.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libatiuki.so.1
-%attr(755,root,root) %{_libdir}/libGL.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libGL.so.1
-%attr(755,root,root) %{_libdir}/libGL.so
-%attr(755,root,root) %{_libdir}/libfglrx_dm.so.*.*
-%endif
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libfglrx_dm.so
+%attr(755,root,root) %{_libdir}/fglrx/libfglrx_dm.so
+%attr(755,root,root) %{_libdir}/fglrx/libGL.so
 %{_includedir}/GL
-%if %{with multigl}
-%attr(755,root,root) %{_libdir}/libGL.so
-%endif
 %{_pkgconfigdir}/gl.pc
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libfglrx_dm.a
+%{_libdir}/fglrx/libfglrx_dm.a
 
 %files atieventsd
 %defattr(644,root,root,755)
@@ -453,6 +392,7 @@ fi
 %files config
 %defattr(644,root,root,755)
 %{_sysconfdir}/X11/xorg.conf.d/10-fglrx.conf
+%{_sysconfdir}/X11/xorg.conf.d/10-fglrx-modules.conf
 %endif
 
 %if %{with kernel}
