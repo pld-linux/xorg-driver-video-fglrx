@@ -64,6 +64,7 @@ Provides:	xorg-driver-video
 Provides:	xorg-xserver-module(glx)
 Obsoletes:	X11-driver-firegl < 1:7.0.0
 Obsoletes:	XFree86-driver-firegl < 1:7.0.0
+Obsoletes:	xorg-driver-video-fglrx-config
 Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
@@ -158,22 +159,6 @@ Demon zewnętrznych zdarzeń ATI jest aplikacją monitorującą różne
 zdarzenia systemowe, takie jak ACPI lub hotplug, a następnie
 informującą sterownik poprzez interfejs rozszerzeń X, że zaszło
 zdarzenie.
-
-%package config
-Summary:	Xorg configuration file to use fglrx module
-Summary(pl.UTF-8):	Plik konfiguracyjny modułu fglrx dla Xorg
-Group:		X11
-Requires:	%{name} = %{epoch}:%{version}-%{release}
-
-%description config
-Without configuration file Xorg doesn't use fglrx module. If you want
-to use it you should install this package or create own configuration
-file.
-
-%description config -l pl.UTF-8
-Bez odpowiedniej konfiguracji Xorg nie będzie używał modułu fglrx. Aby
-to umożliwić należy zainstalować tą paczkę lub stworzyć własny plik
-konfiguracyjny.
 
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
@@ -340,6 +325,8 @@ fi
 %attr(755,root,root) %{_libdir}/xorg/modules/linux/libfglrxdrm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/amdxmm.so
 %attr(755,root,root) %{_libdir}/xorg/modules/glesx.so
+%{_sysconfdir}/X11/xorg.conf.d/10-fglrx.conf
+%{_sysconfdir}/X11/xorg.conf.d/10-fglrx-modules.conf
 
 %files libs
 %defattr(644,root,root,755)
@@ -388,11 +375,6 @@ fi
 %attr(755,root,root) %{_sysconfdir}/acpi/ati-powermode.sh
 %{_sysconfdir}/acpi/events/*
 %{_mandir}/man8/atieventsd.8*
-
-%files config
-%defattr(644,root,root,755)
-%{_sysconfdir}/X11/xorg.conf.d/10-fglrx.conf
-%{_sysconfdir}/X11/xorg.conf.d/10-fglrx-modules.conf
 %endif
 
 %if %{with kernel}
