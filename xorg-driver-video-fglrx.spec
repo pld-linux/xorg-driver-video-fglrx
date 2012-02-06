@@ -31,7 +31,7 @@ Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}
 Version:	12.1
-Release:	5
+Release:	6
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
@@ -231,7 +231,6 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/{ati,env.d,X11/xorg.conf.d,ld.so.conf.d
 	$RPM_BUILD_ROOT/etc/{sysconfig,rc.d/init.d} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/OpenCL/vendors
 
-
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/atieventsd
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/atieventsd
 
@@ -262,7 +261,11 @@ cp -r common%{_desktopdir}/*.desktop $RPM_BUILD_ROOT%{_desktopdir}
 
 cp -r common%{_mandir}/man8/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
+%ifarch %{x8664}
+echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx64.conf
+%else
 echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
+%endif
 
 cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}/fglrx
 
@@ -333,7 +336,7 @@ fi
 %dir %{_sysconfdir}/OpenCL
 %dir %{_sysconfdir}/OpenCL/vendors
 %{_sysconfdir}/OpenCL/vendors/*.icd
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ld.so.conf.d/fglrx*.conf
 %dir %{_libdir}/fglrx
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libAMDXvBA.so.1
