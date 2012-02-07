@@ -284,6 +284,7 @@ echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_syscon
 install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
 %{__sed} -e 's|@@prefix@@|%{_prefix}|g;s|@@libdir@@|%{_libdir}|g;s|@@includedir@@|%{_includedir}|g;s|@@version@@|%{version}|g' < %{SOURCE3} \
 	> $RPM_BUILD_ROOT%{_pkgconfigdir}/gl.pc
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
