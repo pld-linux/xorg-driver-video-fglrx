@@ -26,12 +26,13 @@
 %define		arch_dir	x86_64
 %endif
 
+%define		rel		8
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}
 Version:	12.1
-Release:	7
+Release:	%{rel}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
@@ -54,7 +55,7 @@ URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
-Requires:	%{pname}-libs = %{epoch}:%{version}-%{release}
+Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) <= 11.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
@@ -69,9 +70,6 @@ Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-# constify %rel macro, so it wouldn't expand in kernel subpkgs
-%{expand:%%global release %{release}}
 
 %define		_ccver	%(rpm -q --qf "%{VERSION}" gcc | sed 's/\\..*//')
 
@@ -112,7 +110,7 @@ Implementacja OpenGL (tylko GL i GLX) firmy ATI/AMD.
 Summary:	Header files for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Pliki nagłówkowe do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{pname}-libs = %{epoch}:%{version}-%{release}
+Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 # or more?
 Requires:	xorg-proto-glproto-devel
 # 4.0 for Radeon HD 5000 Series
@@ -133,7 +131,7 @@ ATI dla kart graficznych Radeon.
 Summary:	Static libraries for development for the ATI Radeon cards proprietary driver
 Summary(pl.UTF-8):	Biblioteki statyczne do programowania z użyciem własnościowego sterownika dla kart ATI Radeon
 Group:		X11/Development/Libraries
-Requires:	%{pname}-devel = %{epoch}:%{version}-%{release}
+Requires:	%{pname}-devel = %{epoch}:%{version}-%{rel}
 
 %description static
 Static libraries for development for the ATI proprietary driver for
@@ -147,7 +145,7 @@ sterownika ATI dla kart graficznych ATI Radeon.
 Summary:	ATI external events daemon
 Summary(pl.UTF-8):	Demon zewnętrznych zdarzeń ATI
 Group:		Daemons
-Requires:	%{pname} = %{epoch}:%{version}-%{release}
+Requires:	%{pname} = %{epoch}:%{version}-%{rel}
 Requires:	acpid
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
@@ -166,12 +164,12 @@ zdarzenie.
 %package -n kernel%{_alt_kernel}-video-firegl
 Summary:	ATI kernel module for FireGL support
 Summary(pl.UTF-8):	Moduł jądra oferujący wsparcie dla ATI FireGL
-Release:	%{release}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 License:	ATI
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel}
 %if "%{_alt_kernel}" != "%{nil}"
-Provides:	kernel-video-firegl = %{epoch}:%{version}-%{release}@%{_kernel_ver_str}
+Provides:	kernel-video-firegl = %{epoch}:%{version}-%{rel}@%{_kernel_ver_str}
 %endif
 Requires(post,postun):	/sbin/depmod
 
