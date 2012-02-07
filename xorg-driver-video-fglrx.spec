@@ -31,7 +31,7 @@ Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}
 Version:	12.1
-Release:	6
+Release:	7
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
