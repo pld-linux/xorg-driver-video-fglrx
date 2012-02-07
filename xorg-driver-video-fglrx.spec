@@ -26,13 +26,12 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		6
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}
 Version:	12.1
-Release:	%{rel}
+Release:	6
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
@@ -72,7 +71,7 @@ ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # constify %rel macro, so it wouldn't expand in kernel subpkgs
-%{expand:%%global rel %{release}}
+%{expand:%%global release %{release}}
 
 %define		_ccver	%(rpm -q --qf "%{VERSION}" gcc | sed 's/\\..*//')
 
