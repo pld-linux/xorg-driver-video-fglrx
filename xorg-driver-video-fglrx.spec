@@ -26,18 +26,18 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		15
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}
-Version:	12.1
+Version:	12.2
 Release:	%{rel}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 Source0:	http://dlmdownloads.ati.com/drivers/linux/amd-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	6396d0f6f70b89d605bac896feb2b7c9
+# Source0-md5:	7764bd0343ed542a8e0ebed05e347865
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
