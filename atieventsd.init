@@ -28,7 +28,7 @@ start() {
 
 	msg_starting "atieventsd"
         XAUTHORITY=$DAEMONXAUTHFILE daemon /usr/sbin/atieventsd $DAEMONOPTS
-	pidofproc atieventsd > /var/run/atieventsd.pid 
+	pidofproc atieventsd > /var/run/atieventsd.pid
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/atieventsd
 }
