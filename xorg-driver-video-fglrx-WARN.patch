@@ -1,5 +1,5 @@
---- common/lib/modules/fglrx/build_mod/kcl_debug.h.orig	2011-12-30 14:32:00.271391437 +0100
-+++ common/lib/modules/fglrx/build_mod/kcl_debug.h	2011-12-30 15:48:21.647473696 +0100
+--- ./common/lib/modules/fglrx/build_mod/kcl_debug.h.orig	2011-12-30 14:32:00.271391437 +0100
++++ ./common/lib/modules/fglrx/build_mod/kcl_debug.h	2011-12-30 15:48:21.647473696 +0100
 @@ -85,8 +85,8 @@
  #ifdef ERROR
  #undef ERROR
@@ -20,7 +20,18 @@
      INFO ,
      INFOEX,
      TRACE,
-@@ -163,14 +163,14 @@
+@@ -160,7 +160,7 @@
+ }log_map;
+ 
+ 
+-#define DEFAULT_LOG_LEVEL ((U08)(___BIT(INFO) | ___BIT(INFOEX) |___BIT(ERROR) |___BIT(WARN) | ___BIT(TRACE)| ___BIT(SPECIAL)  ))
++#define DEFAULT_LOG_LEVEL ((U08)(___BIT(INFO) | ___BIT(INFOEX) |___BIT(ERROR) |___BIT(AMD_WARN) | ___BIT(TRACE)| ___BIT(SPECIAL)  ))
+ #define INFO_LOG_LEVEL ((U08)(___BIT(INFO) | ___BIT(INFOEX)))
+ extern const log_map module_log_map[];
+ extern const module_map module_type_map[];
+--- xorg-driver-video-fglrx-12.2/common/lib/modules/fglrx/build_mod/kcl_debug.c~	2012-02-29 22:34:52.000000000 +0200
++++ xorg-driver-video-fglrx-12.2/common/lib/modules/fglrx/build_mod/kcl_debug.c	2012-04-01 17:01:36.505248959 +0300
+@@ -69,7 +69,7 @@
  {
      {SPECIAL        ,   'S'},
      {ERROR          ,   'E'},
@@ -29,11 +40,3 @@
      {INFO           ,   'I'},
      {INFOEX         ,   'X'},
      {TRACE          ,   'T'},
-     {PERFORMANCE    ,   'P'},
-     {DUMP           ,   'D'},
- };
--#define DEFAULT_LOG_LEVEL ((U08)(___BIT(INFO) | ___BIT(INFOEX) |___BIT(ERROR) |___BIT(WARN) | ___BIT(TRACE)| ___BIT(SPECIAL)  ))
-+#define DEFAULT_LOG_LEVEL ((U08)(___BIT(INFO) | ___BIT(INFOEX) |___BIT(ERROR) |___BIT(AMD_WARN) | ___BIT(TRACE)| ___BIT(SPECIAL)  ))
- #define INFO_LOG_LEVEL ((U08)(___BIT(INFO) | ___BIT(INFOEX)))
- static module_map module_type_map[LOG_M_MAX] =
- {

@@ -1,3 +1,5 @@
+# TODO
+# - /usr/lib64/fglrx/libSlotMaximizerBe.so
 #
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
@@ -184,7 +186,7 @@ Moduł jądra oferujący wsparcie dla ATI FireGL.
 
 sh %{SOURCE0} --extract .
 
-cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
+cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
 %if %{with dist_kernel}
 %patch0 -p1
@@ -194,25 +196,25 @@ cp arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p0
+%patch6 -p1
 %patch7 -p0
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
-cp -r %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
+cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
 mv common%{_libdir}/modules/extensions/{fglrx/fglrx-libglx.so,libglx.so}
-cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
-cp -r arch/%{arch_dir}/usr/X11R6/%{_lib}/modules common%{_libdir}/xorg
-cp -r arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
-cp -r arch/%{arch_dir}/usr/bin/* common%{_bindir}
-cp -r arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
-cp -r arch/%{arch_dir}/usr/%{_lib}/*.so* common%{_libdir}
+cp -a arch/%{arch_dir}/usr/X11R6/%{_lib}/* common%{_libdir}
+cp -a arch/%{arch_dir}/usr/X11R6/%{_lib}/modules common%{_libdir}/xorg
+cp -a arch/%{arch_dir}/usr/X11R6/bin/* common%{_bindir}
+cp -a arch/%{arch_dir}/usr/bin/* common%{_bindir}
+cp -a arch/%{arch_dir}/usr/sbin/* common%{_sbindir}
+cp -a arch/%{arch_dir}/usr/%{_lib}/*.so* common%{_libdir}
 mv common%{_libdir}/{fglrx/fglrx-libGL.so.1.2,libGL.so.1.2}
-cp -r arch/%{arch_dir}/etc/* common/etc
+cp -a arch/%{arch_dir}/etc/* common/etc
 
 %build
 %if %{with kernel}
 cd common/lib/modules/fglrx/build_mod
-cp -f 2.6.x/Makefile .
+cp -pf 2.6.x/Makefile .
 %build_kernel_modules -c -m fglrx GCC_VER_MAJ=%{_ccver}
 cd -
 %endif
@@ -232,43 +234,43 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/{ati,env.d,X11/xorg.conf.d,ld.so.conf.d
 	$RPM_BUILD_ROOT/etc/{sysconfig,rc.d/init.d} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/OpenCL/vendors
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/atieventsd
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/atieventsd
+install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/atieventsd
+cp -p %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/atieventsd
 
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
+cp -p %{SOURCE5} $RPM_BUILD_ROOT/etc/X11/xorg.conf.d
 sed -i -e 's|@@LIBDIR@@|%{_libdir}|g' $RPM_BUILD_ROOT/etc/X11/xorg.conf.d/10-fglrx-modules.conf
 
-cp -r common%{_datadir}/doc/fglrx/examples/etc/acpi $RPM_BUILD_ROOT/etc
+cp -a common%{_datadir}/doc/fglrx/examples/etc/acpi $RPM_BUILD_ROOT/etc
 install -p common/etc/OpenCL/vendors/*.icd $RPM_BUILD_ROOT%{_sysconfdir}/OpenCL/vendors
 
-install common%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
-install common/usr/X11R6/bin/* $RPM_BUILD_ROOT%{_bindir}
-install common%{_sbindir}/* $RPM_BUILD_ROOT%{_sbindir}
+install -p common%{_bindir}/* $RPM_BUILD_ROOT%{_bindir}
+install -p common/usr/X11R6/bin/* $RPM_BUILD_ROOT%{_bindir}
+install -p common%{_sbindir}/* $RPM_BUILD_ROOT%{_sbindir}
 
 rm $RPM_BUILD_ROOT%{_sbindir}/atigetsysteminfo.sh
 
-cp -r common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
+cp -a common%{_libdir}/modules/* $RPM_BUILD_ROOT%{_libdir}/xorg/modules
 ln -s %{_libdir}/xorg/modules/dri $RPM_BUILD_ROOT%{_libdir}
-cp -r common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
-cp -r common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
-cp -r common%{_sysconfdir}/ati/amdpcsdb.default $RPM_BUILD_ROOT%{_sysconfdir}/ati/amdpcsdb.default
-cp -r common%{_sysconfdir}/ati/atiogl.xml $RPM_BUILD_ROOT%{_sysconfdir}/ati/atiogl.xml
+cp -a common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
+cp -a common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
+cp -a common%{_sysconfdir}/ati/amdpcsdb.default $RPM_BUILD_ROOT%{_sysconfdir}/ati/amdpcsdb.default
+cp -a common%{_sysconfdir}/ati/atiogl.xml $RPM_BUILD_ROOT%{_sysconfdir}/ati/atiogl.xml
 
-cp -r common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
-cp -r common%{_datadir}/icons/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
+cp -a common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
+cp -a common%{_datadir}/icons/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
 
 cp -r common%{_desktopdir}/*.desktop $RPM_BUILD_ROOT%{_desktopdir}
 
-cp -r common%{_mandir}/man8/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
+cp -a common%{_mandir}/man8/*.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 %ifarch %{x8664}
-echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx64.conf
+echo %{_libdir}/fglrx > $RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx64.conf
 %else
-echo %{_libdir}/fglrx >$RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
+echo %{_libdir}/fglrx > $RPM_BUILD_ROOT%{_sysconfdir}/ld.so.conf.d/fglrx.conf
 %endif
 
-cp -r common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}/fglrx
+cp -a common%{_libdir}/lib* $RPM_BUILD_ROOT%{_libdir}/fglrx
 
 mv -f $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/{,fglrx}/libglx.so
 
@@ -276,7 +278,7 @@ mv -f $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/{,fglrx}/libglx.so
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/fglrx/libGL.so
 ln -sf libfglrx_dm.so.*.* $RPM_BUILD_ROOT%{_libdir}/fglrx/libfglrx_dm.so
 
-install common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
+cp -p common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 
 install -d $RPM_BUILD_ROOT%{_pkgconfigdir}
