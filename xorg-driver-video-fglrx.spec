@@ -28,11 +28,11 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		3
+%define		rel		4
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
-Name:		%{pname}
+Name:		%{pname}%{_alt_kernel}
 Version:	12.3
 Release:	%{rel}
 Epoch:		1
@@ -63,7 +63,7 @@ Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) <= 11.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
-Suggests:	%{name}-config
+Suggests:	%{pname}-config
 Suggests:	kernel-video-firegl
 Provides:	xorg-driver-video
 Provides:	xorg-xserver-module(glx)
@@ -73,7 +73,7 @@ Obsoletes:	xorg-driver-video-fglrx-config
 Obsoletes:	xorg-driver-video-fglrx-libdri
 Obsoletes:	xorg-driver-video-fglrx-libglx
 ExclusiveArch:	i586 i686 athlon pentium3 pentium4 %{x8664}
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
 %define		_ccver	%(rpm -q --qf "%{VERSION}" gcc | sed 's/\\..*//')
 
