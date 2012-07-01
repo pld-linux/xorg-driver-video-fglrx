@@ -28,12 +28,12 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		rel		10
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	12.4
+Version:	12.6
 Release:	%{rel}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
@@ -41,7 +41,7 @@ Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
 # or go to http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 4xxx -> linux
 Source0:	http://www2.ati.com/drivers/linux/amd-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.run
-# Source0-md5:	e57d65cb9c9fa470d6d80072d5ab2785
+# Source0-md5:	6bd4f0875202390ed7122696db29be77
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -53,7 +53,6 @@ Patch2:		%{pname}-x86genericarch.patch
 Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
-Patch6:		%{pname}-WARN.patch
 Patch7:		%{pname}-kernel-fpu.patch
 Patch8:		kernel-3.4.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
@@ -62,7 +61,7 @@ BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) <= 11.0
+Requires:	xorg-xserver-server(videodrv-abi) <= 12.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	%{pname}-config
 Suggests:	kernel-video-firegl
@@ -82,15 +81,16 @@ BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 %define		no_install_post_check_so	1
 
 %description
-Display driver files for the ATI Radeon 8500, 9700, Mobility M9 and
-the FireGL 8700/8800, E1, Z1/X1 graphics accelerators. This package
-provides 2D display drivers and hardware accelerated OpenGL.
+AMD display driver which allows for hardware accelerated rendering
+with ATI Mobility, FireGL and Desktop GPUs. Some of the Desktop and
+Mobility GPUs supported are the Radeon HD 5xxx series to the
+Radeon HD 7xxx series.
 
 %description -l pl.UTF-8
-Sterowniki do kart graficznych ATI Radeon 8500, 9700, Mobility M9 oraz
-graficznych akceleratorów FireGL 8700/8800, E1, Z1/X1. Pakiet
-dostarcza sterowniki obsługujące wyświetlanie 2D oraz sprzętowo
-akcelerowany OpenGL.
+Sterownik AMD umożliwiający sprzętowo akcelerowany rendering do kart
+graficznych ATI Mobility, FireGL i Desktopowych. Niektóre ze
+wspieranych Desktopowych i Mobilnych kart to Radeon HD 5xxx do
+Radeon HD 7xxx.
 
 %package libs
 Summary:	OpenGL (GL and GLX) ATI/AMD libraries
@@ -199,7 +199,6 @@ cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/bu
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
 %patch7 -p0
 %patch8 -p1
 

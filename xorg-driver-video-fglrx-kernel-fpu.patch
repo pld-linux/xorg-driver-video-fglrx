@@ -1,18 +1,37 @@
 --- common/lib/modules/fglrx/build_mod/firegl_public.c.orig	2012-01-21 21:44:22.000000000 +0100
 +++ common/lib/modules/fglrx/build_mod/firegl_public.c	2012-01-21 22:21:45.126304477 +0100
-@@ -5791,16 +5791,7 @@
+@@ -5791,35 +5791,7 @@
   */
  void ATI_API_CALL KCL_fpu_begin(void)
  {
 -#ifdef CONFIG_X86_64
      kernel_fpu_begin();
 -#else
+-#ifdef TS_USEDFPU
 -    struct thread_info *cur_task = current_thread_info();
 -    preempt_disable();
 -    if (cur_task->status & TS_USEDFPU)
 -        __save_init_fpu(cur_task->task);
 -    else
 -        clts();
+-#else
+-    /* TS_USEDFPU is removed in kernel 3.3+ and 3.2.8+ with the commit below:
+-     * https://github.com/torvalds/linux/commit/f94edacf998516ac9d849f7bc6949a703977a7f3
+-     */
+-    struct task_struct *cur_task = current;
+-    preempt_disable();
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,3,0)
+-    /* The thread structure is changed with the commit below for kernel 3.3:
+-     * https://github.com/torvalds/linux/commit/7e16838d94b566a17b65231073d179bc04d590c8
+-     */
+-    if (cur_task->thread.fpu.has_fpu)
+-#else
+-    if (cur_task->thread.has_fpu)
+-#endif
+-        __save_init_fpu(cur_task);
+-    else
+-        clts();
+-#endif
 -#endif
  }
  
