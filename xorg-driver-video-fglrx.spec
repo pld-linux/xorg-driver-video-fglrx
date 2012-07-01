@@ -63,7 +63,6 @@ Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
 Requires:	xorg-xserver-server(videodrv-abi) <= 12.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
-Suggests:	%{pname}-config
 Suggests:	kernel-video-firegl
 Provides:	xorg-driver-video
 Provides:	xorg-xserver-module(glx)
