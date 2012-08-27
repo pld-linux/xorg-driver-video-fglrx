@@ -1,6 +1,6 @@
 --- common/lib/modules/fglrx/build_mod/firegl_public.c.orig	2012-01-21 21:44:22.000000000 +0100
 +++ common/lib/modules/fglrx/build_mod/firegl_public.c	2012-01-21 22:21:45.126304477 +0100
-@@ -5791,35 +5791,7 @@
+@@ -5791,36 +5791,7 @@
   */
  void ATI_API_CALL KCL_fpu_begin(void)
  {
@@ -8,10 +8,11 @@
      kernel_fpu_begin();
 -#else
 -#ifdef TS_USEDFPU
--    struct thread_info *cur_task = current_thread_info();
+-    struct thread_info *cur_thread = current_thread_info();
+-    struct task_struct *cur_task = get_current();
 -    preempt_disable();
--    if (cur_task->status & TS_USEDFPU)
--        __save_init_fpu(cur_task->task);
+-    if (cur_thread->status & TS_USEDFPU)
+-        __save_init_fpu(cur_task);
 -    else
 -        clts();
 -#else
