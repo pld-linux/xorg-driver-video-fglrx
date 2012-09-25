@@ -1,0 +1,44 @@
+--- xorg-driver-video-fglrx-12.8/common/lib/modules/fglrx/build_mod/firegl_public.c.orig	2012-07-29 15:27:34.069562576 +0200
++++ xorg-driver-video-fglrx-12.8/common/lib/modules/fglrx/build_mod/firegl_public.c	2012-07-29 15:19:30.431849972 +0200
+@@ -2126,9 +2126,13 @@ unsigned long ATI_API_CALL KCL_MEM_Alloc
+     flags = MAP_SHARED;
+     prot  = PROT_READ|PROT_WRITE;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
++    vaddr = (void *) vm_mmap(file, 0, len, prot, flags, pgoff);
++#else
+     down_write(&current->mm->mmap_sem);
+     vaddr = (void *) do_mmap(file, 0, len, prot, flags, pgoff);
+     up_write(&current->mm->mmap_sem);
++#endif
+     if (IS_ERR(vaddr))
+        return 0;
+     else
+@@ -2139,6 +2143,16 @@ int ATI_API_CALL KCL_MEM_ReleaseLinearAd
+ {
+     int retcode = 0;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,5,0)
++#ifdef FGL_LINUX_RHEL_MUNMAP_API
++    retcode = vm_munmap(addr,
++                        len,
++                        1);
++#else
++    retcode = vm_munmap(addr,
++                        len);
++#endif
++#else
+     down_write(&current->mm->mmap_sem);
+ #ifdef FGL_LINUX_RHEL_MUNMAP_API
+     retcode = do_munmap(current->mm,
+@@ -2149,8 +2163,9 @@ int ATI_API_CALL KCL_MEM_ReleaseLinearAd
+     retcode = do_munmap(current->mm,
+                         addr,
+                         len);
+-#endif                        
+     up_write(&current->mm->mmap_sem);
++#endif
++#endif
+     return retcode;
+ }
+ 
