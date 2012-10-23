@@ -30,20 +30,20 @@
 
 %define		intver		8.982
 
-%define		rel		8
+%define		rel		0.1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	12.8
+Version:	12.10
 Release:	%{rel}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
-# or go to http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 4xxx -> linux
-Source0:	http://www2.ati.com/drivers/linux/amd-driver-installer-%(echo %{version} | tr . -)-x86.x86_64.zip
-# Source0-md5:	41c5478322b13be6909eeb46412a3aa0
+# or go to http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
+Source0:	http://www2.ati.com/drivers/linux/amd-driver-installer-catalyst-%{version}-x86.x86_64.zip
+# Source0-md5:	ef6ecd984e47e80849215b33fbfa5b7f
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -56,14 +56,13 @@ Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch7:		%{pname}-kernel-fpu.patch
-Patch8:		linux-3.5.0-missing_do_mmap.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 BuildRequires:	rpmbuild(macros) >= 1.379
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) <= 12.1
+Requires:	xorg-xserver-server(videodrv-abi) <= 13.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	kernel-video-firegl
 Provides:	xorg-driver-video
@@ -190,7 +189,7 @@ Moduł jądra oferujący wsparcie dla ATI FireGL.
 %setup -q -c
 
 #sh %{SOURCE0} --extract .
-sh amd-driver-installer-%{intver}-x86.x86_64.run --extract .
+sh amd-driver-installer-catalyst-%{version}-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
@@ -203,7 +202,6 @@ cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/bu
 %patch4 -p1
 %patch5 -p1
 %patch7 -p0
-%patch8 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
