@@ -28,22 +28,22 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		intver		8.982
+%define		intver		9.012
 
-%define		rel		26
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	12.10
+Version:	13.1
 Release:	%{rel}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
 # or go to http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
-Source0:	http://www2.ati.com/drivers/linux/amd-driver-installer-catalyst-%{version}-x86.x86_64.zip
-# Source0-md5:	ef6ecd984e47e80849215b33fbfa5b7f
+Source0:	http://www2.ati.com/drivers/linux/amd-driver-installer-catalyst-%{version}-linux-x86.x86_64.zip
+# Source0-md5:	e72b6fcd950d4caa2348af06e7dc9365
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -190,7 +190,7 @@ Moduł jądra oferujący wsparcie dla ATI FireGL.
 %setup -q -c
 
 #sh %{SOURCE0} --extract .
-sh amd-driver-installer-catalyst-%{version}-x86.x86_64.run --extract .
+sh amd-driver-installer-catalyst-%{version}-linux-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
