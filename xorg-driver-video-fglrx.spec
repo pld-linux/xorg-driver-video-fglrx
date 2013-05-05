@@ -1,6 +1,3 @@
-# TODO
-# - /usr/lib64/fglrx/libSlotMaximizerBe.so
-#
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
@@ -28,22 +25,21 @@
 %define		arch_dir	x86_64
 %endif
 
-%define		intver		9.012
+%define		intver		12.104
 
-%define		rel		6
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{_alt_kernel}
-Version:	13.1
+Version:	13.4
 Release:	%{rel}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
-# Download http://support.amd.com/us/gpudownload/linux/Pages/radeon_linux.aspx?type=2.4.1&product=2.4.1.3.42&lang=English
-# or go to http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
-Source0:	http://www2.ati.com/drivers/linux/amd-driver-installer-catalyst-%{version}-linux-x86.x86_64.zip
-# Source0-md5:	e72b6fcd950d4caa2348af06e7dc9365
+# http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
+Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-%{version}-linux-x86.x86_64.zip
+# Source0-md5:	558bd1b31173b06b25da647a7112e734
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -190,7 +186,7 @@ Moduł jądra oferujący wsparcie dla ATI FireGL.
 %setup -q -c
 
 #sh %{SOURCE0} --extract .
-sh amd-driver-installer-catalyst-%{version}-linux-x86.x86_64.run --extract .
+sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
 
@@ -352,13 +348,12 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libOpenCL.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerAg.so
-%ifarch %{ix86}
 %attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerBe.so
-%endif
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/fglrx/libamdocl*.so
+%attr(755,root,root) %{_libdir}/fglrx/libamdsc*.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticalcl.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticaldd.so
