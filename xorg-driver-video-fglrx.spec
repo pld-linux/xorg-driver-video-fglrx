@@ -189,7 +189,11 @@ Moduł jądra oferujący wsparcie dla ATI FireGL.
 #sh %{SOURCE0} --extract .
 sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
 
-cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/build_mod
+cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
+cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
+\$(M)/libfglrx_ip.a:
+	ln -s \$(LIBIP_PREFIX)/libfglrx_ip.a \$(M)
+EOF
 
 %if %{with dist_kernel}
 %patch0 -p1
