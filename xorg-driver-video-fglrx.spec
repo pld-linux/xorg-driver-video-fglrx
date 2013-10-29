@@ -49,7 +49,7 @@ exit 1
 
 %define		intver		12.104
 
-%define		rel		20
+%define		rel		21
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
