@@ -48,20 +48,22 @@ exit 1
 %endif
 
 %define		intver		12.104
+%define		betaver		9.4
 
-%define		rel		21
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	13.4
-Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
+Version:	13.11
+Release:	0.beta.%{betaver}.%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
-Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-%{version}-linux-x86.x86_64.zip
-# Source0-md5:	558bd1b31173b06b25da647a7112e734
+#Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-%{version}-linux-x86.x86_64.zip
+Source0:	amd-catalyst-%{version}-beta-v%{betaver}-linux-x86.x86_64.run.zip
+# Source0-md5:	60d3cfa20fe53875f9eb3c98ddc18b07
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -74,15 +76,13 @@ Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch7:		%{pname}-kernel-fpu.patch
-Patch8:		linux-3.7.patch
-Patch9:		linux-3.10.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:%{expand:%kbrs}}
 BuildRequires:	rpmbuild(macros) >= 1.678
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) <= 13.1
+Requires:	xorg-xserver-server(videodrv-abi) <= 14.1
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	kernel-video-firegl
 Provides:	xorg-driver-video
@@ -232,7 +232,8 @@ cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglr
 %setup -q -c
 
 #sh %{SOURCE0} --extract .
-sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
+#sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
+sh "amd-catalyst-%{version}-beta V%{betaver}-linux-x86.x86_64.run" --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
 cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
@@ -249,8 +250,6 @@ EOF
 %patch4 -p1
 %patch5 -p1
 %patch7 -p0
-%patch8 -p1
-%patch9 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
@@ -325,7 +324,7 @@ mv -f $RPM_BUILD_ROOT%{_libdir}/xorg/modules/extensions/{,fglrx}/libglx.so
 
 /sbin/ldconfig -n $RPM_BUILD_ROOT%{_libdir}/fglrx
 ln -sf libGL.so.1 $RPM_BUILD_ROOT%{_libdir}/fglrx/libGL.so
-ln -sf libfglrx_dm.so.*.* $RPM_BUILD_ROOT%{_libdir}/fglrx/libfglrx_dm.so
+(cd $RPM_BUILD_ROOT%{_libdir}/fglrx ; ln -sf libfglrx_dm.so.*.* libfglrx_dm.so)
 
 cp -p common%{_includedir}/GL/*.h $RPM_BUILD_ROOT%{_includedir}/GL
 echo "LIBGL_DRIVERS_PATH=%{_libdir}/xorg/modules/dri" > $RPM_BUILD_ROOT%{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
@@ -388,8 +387,6 @@ fi
 %attr(755,root,root) %{_libdir}/fglrx/libAMDXvBA.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libAMDXvBA.so.1
 %attr(755,root,root) %{_libdir}/fglrx/libOpenCL.so.1
-%attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerAg.so
-%attr(755,root,root) %{_libdir}/fglrx/libSlotMaximizerBe.so
 %attr(755,root,root) %{_libdir}/fglrx/libXvBAW.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
