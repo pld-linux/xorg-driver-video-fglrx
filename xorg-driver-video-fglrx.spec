@@ -50,13 +50,13 @@ exit 1
 %define		intver		12.104
 %define		betaver		9.4
 
-%define		rel		1
+%define		rel		0.beta.%{betaver}.2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
 Version:	13.11
-Release:	0.beta.%{betaver}.%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
+Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
