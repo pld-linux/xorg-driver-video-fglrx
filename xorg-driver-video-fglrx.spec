@@ -47,23 +47,22 @@ exit 1
 %define		arch_dir	x86_64
 %endif
 
-%define		intver		12.104
-%define		betaver		9.4
+%define		intver		13.251
 
-%define		rel		0.beta.%{betaver}.2
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	13.11
+Version:	13.12
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
 #Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-%{version}-linux-x86.x86_64.zip
-Source0:	amd-catalyst-%{version}-beta-v%{betaver}-linux-x86.x86_64.run.zip
-# Source0-md5:	60d3cfa20fe53875f9eb3c98ddc18b07
+Source0:	amd-catalyst-%{version}-linux-x86.x86_64.zip
+# Source0-md5:	2418a94b699fe8fdec01ccd32f684c90
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -76,6 +75,7 @@ Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch7:		%{pname}-kernel-fpu.patch
+Patch8:		linux-3.10.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:%{expand:%kbrs}}
 BuildRequires:	rpmbuild(macros) >= 1.678
@@ -232,8 +232,7 @@ cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglr
 %setup -q -c
 
 #sh %{SOURCE0} --extract .
-#sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
-sh "amd-catalyst-%{version}-beta V%{betaver}-linux-x86.x86_64.run" --extract .
+sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
 cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
@@ -250,6 +249,7 @@ EOF
 %patch4 -p1
 %patch5 -p1
 %patch7 -p0
+%patch8 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
