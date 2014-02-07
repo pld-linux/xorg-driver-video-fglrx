@@ -47,22 +47,23 @@ exit 1
 %define		arch_dir	x86_64
 %endif
 
-%define		intver		13.251
+%define		intver		13.35.1005
+%define		betaver		1.3
 
 %define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	13.12
-Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
+Version:	14.1
+Release:	0.beta.%{betaver}.%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
 #Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-%{version}-linux-x86.x86_64.zip
-Source0:	amd-catalyst-%{version}-linux-x86.x86_64.zip
-# Source0-md5:	2418a94b699fe8fdec01ccd32f684c90
+Source0:	amd-catalyst-%{version}-betav%{betaver}-linux-x86.x86_64.zip
+# Source0-md5:	f51fc9413ab6f507d8d45995e0d48596
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -75,14 +76,13 @@ Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch7:		%{pname}-kernel-fpu.patch
-Patch8:		linux-3.10.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_dist_kernel:%{expand:%kbrs}}
 BuildRequires:	rpmbuild(macros) >= 1.678
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) <= 14.1
+Requires:	xorg-xserver-server(videodrv-abi) <= 15.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	kernel-video-firegl
 Provides:	xorg-driver-video
@@ -230,9 +230,9 @@ cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglr
 %prep
 #%setup -q -c -T
 %setup -q -c
-
 #sh %{SOURCE0} --extract .
-sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
+#sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
+sh amd-driver-installer-%{intver}-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
 cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
@@ -249,7 +249,6 @@ EOF
 %patch4 -p1
 %patch5 -p1
 %patch7 -p0
-%patch8 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
@@ -303,7 +302,6 @@ ln -s %{_libdir}/xorg/modules/dri $RPM_BUILD_ROOT%{_libdir}
 cp -a common%{_sysconfdir}/ati/control $RPM_BUILD_ROOT%{_sysconfdir}/ati/control
 cp -a common%{_sysconfdir}/ati/signature $RPM_BUILD_ROOT%{_sysconfdir}/ati/signature
 cp -a common%{_sysconfdir}/ati/amdpcsdb.default $RPM_BUILD_ROOT%{_sysconfdir}/ati/amdpcsdb.default
-cp -a common%{_sysconfdir}/ati/atiogl.xml $RPM_BUILD_ROOT%{_sysconfdir}/ati/atiogl.xml
 
 cp -a common%{_datadir}/ati/* $RPM_BUILD_ROOT%{_datadir}/ati
 cp -a common%{_datadir}/icons/*.xpm $RPM_BUILD_ROOT%{_pixmapsdir}
@@ -358,7 +356,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/amdpcsdb.default
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/atiogl.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/env.d/LIBGL_DRIVERS_PATH
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/amdnotifyui
