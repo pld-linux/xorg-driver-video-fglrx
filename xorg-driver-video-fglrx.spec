@@ -50,7 +50,7 @@ exit 1
 %define		intver		13.35.1005
 %define		betaver		1.3
 
-%define		rel		1
+%define		rel		2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
@@ -388,7 +388,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/fglrx/libamdocl*.so
-%attr(755,root,root) %{_libdir}/fglrx/libamdsc*.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticalcl.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticaldd.so
