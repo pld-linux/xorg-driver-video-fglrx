@@ -1,0 +1,16 @@
+--- common/lib/modules/fglrx/build_mod/firegl_public.c.orig	2014-03-21 00:00:50.595242994 +0100
++++ common/lib/modules/fglrx/build_mod/firegl_public.c	2014-03-21 00:05:37.344733615 +0100
+@@ -1761,7 +1761,13 @@ KCL_TYPE_Uid ATI_API_CALL KCL_GetEffecti
+ #else 
+ 
+ #ifdef current_euid
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0)
++    return __kuid_val(current_euid());
++#else
+     return current_euid();
++#endif
++
+ #else
+     return current->euid;
+ #endif
