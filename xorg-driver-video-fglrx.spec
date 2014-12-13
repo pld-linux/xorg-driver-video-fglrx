@@ -47,25 +47,24 @@ exit 1
 %define		arch_dir	x86_64
 %endif
 
-%define		intver		14.201
+%define		intver		14.501.1003
 %define		betaver		1.0
 #define		rel		0.beta%{betaver}.3
 
-%define		rel		2
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	14.9
+Version:	14.12
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
-#Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-%{version}-linux-x86.x86_64.zip
-#Source0:	amd-catalyst-%{version}-betav%{betaver}-linux-x86.x86_64.zip
-Source0:	http://archive.ubuntu.com/ubuntu/pool/restricted/f/fglrx-installer/fglrx-installer_%{intver}.orig.tar.gz
-# Source0-md5:	ff3a7604051971de617a5f4703826ec6
+#Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-omega-%{version}-linux-run-installers.zip
+Source0:	amd-catalyst-omega-%{version}-linux-run-installers.zip
+# Source0-md5:	ced4329274a02712406bda678ffbd743
 %define		vver	%(echo %{version} | tr . -)
 #Source0:	amd-catalyst-%{vver}-linux-x86-x86-64.zip
 Source1:	atieventsd.init
@@ -236,10 +235,9 @@ cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglr
 %setup -q -c
 #sh %{SOURCE0} --extract .
 #sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
-#cd fglrx-%{intver}
-#sh amd-driver-installer-%{intver}-x86.x86_64.run --extract .
+cd fglrx-%{intver}
+sh amd-driver-installer-%{intver}-x86.x86_64.run --extract .
 
-ln -s . common
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
 cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
 \$(M)/libfglrx_ip.a:
@@ -270,13 +268,13 @@ mv common%{_libdir}/{fglrx/fglrx-libGL.so.1.2,libGL.so.1.2}
 cp -a arch/%{arch_dir}/etc/* common/etc
 
 %build
-#cd fglrx-%{intver}
+cd fglrx-%{intver}
 %{?with_kernel:%{expand:%bkpkg}}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-#cd fglrx-%{intver}
+cd fglrx-%{intver}
 
 %if %{with kernel}
 install -d $RPM_BUILD_ROOT
@@ -361,8 +359,7 @@ fi
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-#%doc fglrx-%{intver}/{LICENSE.TXT,common%{_docdir}/fglrx/*.html,common%{_docdir}/fglrx/articles,common%{_docdir}/fglrx/user-manual}
-%doc common/usr/share/doc/fglrx/{LICENSE.TXT,*.html,articles,user-manual}
+%doc fglrx-%{intver}/{LICENSE.TXT,common%{_docdir}/fglrx/*.html,common%{_docdir}/fglrx/articles,common%{_docdir}/fglrx/user-manual}
 %dir %{_sysconfdir}/ati
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
@@ -399,6 +396,7 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/fglrx/libamdocl*.so
+%attr(755,root,root) %{_libdir}/fglrx/libamdhsasc*.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticalcl.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticaldd.so
