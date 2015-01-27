@@ -1,14 +1,9 @@
 # Conditional build:
-%bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 
 %define		x11ver		xpic
-
-%if %{without kernel}
-%undefine	with_dist_kernel
-%endif
 
 # The goal here is to have main, userspace, package built once with
 # simple release number, and only rebuild kernel packages with kernel
@@ -81,7 +76,7 @@ Patch5:		%{pname}-GPL-only.patch
 Patch6:		%{pname}-intel_iommu.patch
 Patch7:		linux-3.17.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
-%{?with_dist_kernel:%{expand:%kbrs}}
+%{?with_kernel:%{expand:%kbrs}}
 BuildRequires:	rpmbuild(macros) >= 1.678
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
@@ -198,10 +193,8 @@ Release:	%{rel}@%{_kernel_ver_str}\
 License:	ATI\
 Group:		Base/Kernel\
 Requires(post,postun):	/sbin/depmod\
-%if %{with dist_kernel}\
 %requires_releq_kernel\
 Requires(postun):	%releq_kernel\
-%endif\
 Provides:	kernel%{_alt_kernel}-video-firegl = %{epoch}:%{version}-%{rel}@%{_kernel_ver_str}\
 \
 %description -n kernel%{_alt_kernel}-video-firegl\
@@ -244,11 +237,9 @@ cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
 	ln -s \$(LIBIP_PREFIX)/libfglrx_ip.a \$(M)
 EOF
 
-%if %{with dist_kernel}
 %patch0 -p1
 %patch1 -p0
 %patch2 -p0
-%endif
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
