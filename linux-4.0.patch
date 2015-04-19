@@ -1,0 +1,71 @@
+diff -ur xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/firegl_public.c xorg-driver-video-fglrx-14.12/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/firegl_public.c
+--- xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/firegl_public.c	2015-04-19 13:36:55.029786519 +0200
++++ xorg-driver-video-fglrx-14.12/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/firegl_public.c	2015-04-19 13:40:08.266446369 +0200
+@@ -4468,8 +4468,13 @@
+ 
+     if (cpu_has_pge)
+     {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++        cr4 = __read_cr4();
++        __write_cr4(cr4 & ~X86_CR4_PGE);
++#else
+         cr4 = read_cr4();
+         write_cr4(cr4 & ~X86_CR4_PGE);
++#endif
+     }
+      __flush_tlb();
+ 
+@@ -4482,7 +4487,11 @@
+     write_cr0(cr0 & 0xbfffffff);
+     if (cpu_has_pge)
+     {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++        __write_cr4(cr4);
++#else
+         write_cr4(cr4);
++#endif
+     }
+     local_irq_restore(flags);
+ 
+@@ -4509,8 +4518,13 @@
+ 
+     if (cpu_has_pge)
+     {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++        cr4 = __read_cr4();
++        __write_cr4(cr4 & ~X86_CR4_PGE);
++#else
+         cr4 = read_cr4();
+         write_cr4(cr4 & ~X86_CR4_PGE);
++#endif
+     }
+      __flush_tlb();
+   
+@@ -4522,7 +4536,11 @@
+     write_cr0(cr0 & 0xbfffffff);
+     if (cpu_has_pge)
+     {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++        __write_cr4(cr4);
++#else
+         write_cr4(cr4);
++#endif
+     }
+     local_irq_restore(flags);
+ 
+Only in xorg-driver-video-fglrx-14.12/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod: firegl_public.c~
+diff -ur xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/kcl_str.c xorg-driver-video-fglrx-14.12/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/kcl_str.c
+--- xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/kcl_str.c	2014-11-28 21:02:10.000000000 +0100
++++ xorg-driver-video-fglrx-14.12/fglrx-14.501.1003/common/lib/modules/fglrx/build_mod/kcl_str.c	2015-04-19 13:40:41.303111870 +0200
+@@ -169,7 +169,11 @@
+                                   const char* s2,
+                                   KCL_TYPE_SizeSigned count)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++    return strncasecmp(s1, s2, count);
++#else
+     return strnicmp(s1, s2, count);
++#endif
+ }
+ 
+ /** \brief Locate character in string
