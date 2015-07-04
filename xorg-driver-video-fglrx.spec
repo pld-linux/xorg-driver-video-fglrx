@@ -31,12 +31,12 @@ exit 1
 %define		betaver		1.0
 #define		rel		0.beta%{betaver}.3
 
-%define		rel		5
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	14.12
+Version:	15.5
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
@@ -44,7 +44,7 @@ Group:		X11
 # http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
 #Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-omega-%{version}-linux-run-installers.zip
 Source0:	amd-catalyst-omega-%{version}-linux-run-installers.zip
-# Source0-md5:	ced4329274a02712406bda678ffbd743
+# Source0-md5:	979f9f2e0948fa6e92ff0125f5c6b575
 %define		vver	%(echo %{version} | tr . -)
 #Source0:	amd-catalyst-%{vver}-linux-x86-x86-64.zip
 Source1:	atieventsd.init
@@ -62,6 +62,7 @@ Patch6:		%{pname}-intel_iommu.patch
 Patch7:		linux-3.17.patch
 Patch8:		linux-3.19.patch
 Patch9:		linux-4.0.patch
+Patch10:	linux-4.1.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:2.6.20.2}}
 BuildRequires:	rpmbuild(macros) >= 1.701
@@ -213,10 +214,7 @@ cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglr
 
 %prep
 %setup -q -c
-#sh %{SOURCE0} --extract .
-#sh amd-catalyst-%{version}-linux-x86.x86_64.run --extract .
-cd fglrx-%{intver}
-sh amd-driver-installer-%{intver}-x86.x86_64.run --extract .
+sh amd-catalyst-omega-%{version}-linux-run-installers.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
 cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
@@ -234,6 +232,7 @@ EOF
 %patch7 -p1
 %patch8 -p1
 %patch9 -p2
+%patch10 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
@@ -248,13 +247,10 @@ mv common%{_libdir}/{fglrx/fglrx-libGL.so.1.2,libGL.so.1.2}
 cp -a arch/%{arch_dir}/etc/* common/etc
 
 %build
-cd fglrx-%{intver}
 %{?with_kernel:%{expand:%build_kernel_packages}}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-cd fglrx-%{intver}
 
 %if %{with kernel}
 install -d $RPM_BUILD_ROOT
@@ -339,7 +335,7 @@ fi
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc fglrx-%{intver}/{LICENSE.TXT,common%{_docdir}/fglrx/*.html,common%{_docdir}/fglrx/articles,common%{_docdir}/fglrx/user-manual}
+%doc LICENSE.TXT common%{_docdir}/fglrx/*.html common%{_docdir}/fglrx/articles common%{_docdir}/fglrx/user-manual
 %dir %{_sysconfdir}/ati
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/control
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/ati/signature
