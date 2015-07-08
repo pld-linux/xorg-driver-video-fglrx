@@ -5,7 +5,7 @@ diff -ur xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules
  
      if (cpu_has_pge)
      {
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0) || ((LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,17)) && (LINUX_VERSION_CODE < KERNEL_VERSION(3,19,0)))
 +        cr4 = __read_cr4();
 +        __write_cr4(cr4 & ~X86_CR4_PGE);
 +#else
@@ -19,7 +19,7 @@ diff -ur xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules
      write_cr0(cr0 & 0xbfffffff);
      if (cpu_has_pge)
      {
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0) || ((LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,17)) && (LINUX_VERSION_CODE < KERNEL_VERSION(3,19,0)))
 +        __write_cr4(cr4);
 +#else
          write_cr4(cr4);
@@ -31,7 +31,7 @@ diff -ur xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules
  
      if (cpu_has_pge)
      {
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0) || ((LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,17)) && (LINUX_VERSION_CODE < KERNEL_VERSION(3,19,0)))
 +        cr4 = __read_cr4();
 +        __write_cr4(cr4 & ~X86_CR4_PGE);
 +#else
@@ -45,7 +45,7 @@ diff -ur xorg-driver-video-fglrx-14.12.orig/fglrx-14.501.1003/common/lib/modules
      write_cr0(cr0 & 0xbfffffff);
      if (cpu_has_pge)
      {
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,0,0) || ((LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,17)) && (LINUX_VERSION_CODE < KERNEL_VERSION(3,19,0)))
 +        __write_cr4(cr4);
 +#else
          write_cr4(cr4);
