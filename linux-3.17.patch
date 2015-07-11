@@ -8,9 +8,9 @@ diff -uNr 14.9/common/lib/modules/fglrx/build_mod/firegl_public.c 14.9/common/li
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
 +//	pci_ignore_hotplug(pdev);
 +{
-+	struct pci_dev *bridge = dev->bus->self;
++	struct pci_dev *bridge = pdev->bus->self;
 +
-+	dev->ignore_hotplug = 1;
++	pdev->ignore_hotplug = 1;
 +	/* Propagate the "ignore hotplug" setting to the parent bridge. */
 +	if (bridge)
 +		bridge->ignore_hotplug = 1;
