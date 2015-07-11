@@ -1,12 +1,20 @@
 diff -uNr 14.9/common/lib/modules/fglrx/build_mod/firegl_public.c 14.9/common/lib/modules/fglrx/build_mod/firegl_public.c
 --- 14.9/common/lib/modules/fglrx/build_mod/firegl_public.c	2014-09-09 16:10:17.000000000 +0200
 +++ 14.9/common/lib/modules/fglrx/build_mod/firegl_public.c	2014-09-26 19:01:44.000000000 +0200
-@@ -1093,6 +1093,9 @@
+@@ -1093,6 +1093,17 @@
      // directly here to allow suspend/resume without X server start. 
          firegl_pci_save_state((KCL_PCI_DevHandle)pdev, privdev);
          pci_disable_device(pdev);
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
-+	pci_ignore_hotplug(pdev);
++//	pci_ignore_hotplug(pdev);
++{
++	struct pci_dev *bridge = dev->bus->self;
++
++	dev->ignore_hotplug = 1;
++	/* Propagate the "ignore hotplug" setting to the parent bridge. */
++	if (bridge)
++		bridge->ignore_hotplug = 1;
++}
 +#endif
          PMSG_EVENT(pdev->dev.power.power_state) = state;
      }
