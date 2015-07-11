@@ -1,0 +1,18 @@
+diff -uNr 14.9/common/lib/modules/fglrx/build_mod/kcl_acpi.c 14.9/common/lib/modules/fglrx/build_mod/kcl_acpi.c
+--- 14.9/common/lib/modules/fglrx/build_mod/kcl_acpi.c	2014-09-09 16:10:17.000000000 +0200
++++ 14.9/common/lib/modules/fglrx/build_mod/kcl_acpi.c	2014-09-26 18:57:27.000000000 +0200
+@@ -863,7 +863,13 @@
+ #elif LINUX_VERSION_CODE >= KERNEL_VERSION(3,17,0)
+     if(pdev)
+     {
+-       pci_ignore_hotplug(pdev);
++//	pci_ignore_hotplug(pdev);
++	struct pci_dev *bridge = pdev->bus->self;
++
++	pdev->ignore_hotplug = 1;
++	/* Propagate the "ignore hotplug" setting to the parent bridge. */
++	if (bridge)
++		bridge->ignore_hotplug = 1;
+     }
+ #endif
+ }

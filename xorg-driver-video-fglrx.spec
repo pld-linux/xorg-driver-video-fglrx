@@ -31,7 +31,7 @@ exit 1
 %define		betaver		1.0
 #define		rel		0.beta%{betaver}.3
 
-%define		rel		4
+%define		rel		5
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
@@ -59,7 +59,7 @@ Patch3:		%{pname}-desktop.patch
 Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch6:		%{pname}-intel_iommu.patch
-Patch7:		linux-3.17.patch
+Patch7:		linux-3.18.18.patch
 Patch8:		linux-3.19.patch
 Patch9:		linux-4.0.patch
 Patch10:	linux-4.1.patch
