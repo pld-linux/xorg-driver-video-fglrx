@@ -5,9 +5,9 @@
          //when MSI enabled. keep irq disabled when calling the action handler,
          //exclude this IRQ from irq balancing (only on one CPU) 
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(4,1,0)
-         ((useMSI) ? (IRQF_DISABLED | IRQF_NOBALANCING) : (IRQF_SHARED)),    
+         ((useMSI) ? (IRQF_DISABLED) : (IRQF_SHARED)),    
 +#else
-+        ((useMSI) ? (IRQF_NOBALANCING) : (IRQF_SHARED)),    
++        ((useMSI) ? (0) : (IRQF_SHARED)),    
 +#endif
  #endif
          dev_name,

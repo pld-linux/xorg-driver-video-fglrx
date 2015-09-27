@@ -27,24 +27,24 @@ exit 1
 %define		arch_dir	x86_64
 %endif
 
-%define		intver		14.501.1003
+%define		intver		15.201.1151
 %define		betaver		1.0
 #define		rel		0.beta%{betaver}.3
 
-%define		rel		5
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	15.5
+Version:	15.9
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
 # http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
 #Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-omega-%{version}-linux-run-installers.zip
-Source0:	amd-catalyst-omega-%{version}-linux-run-installers.zip
-# Source0-md5:	979f9f2e0948fa6e92ff0125f5c6b575
+Source0:	amd-catalyst-%{version}-linux-installer-%{intver}-x86.x86_64.zip
+# Source0-md5:	d2de2df6946b452c266a3c892e6e46ff
 %define		vver	%(echo %{version} | tr . -)
 #Source0:	amd-catalyst-%{vver}-linux-x86-x86-64.zip
 Source1:	atieventsd.init
@@ -60,16 +60,16 @@ Patch4:		%{pname}-nofinger.patch
 Patch5:		%{pname}-GPL-only.patch
 Patch6:		%{pname}-intel_iommu.patch
 Patch7:		linux-3.18.18.patch
-Patch8:		linux-3.19.patch
-Patch9:		linux-4.0.patch
-Patch10:	linux-4.1.patch
+Patch8:		linux-4.0.patch
+Patch9:		linux-4.1.patch
+Patch10:	linux-4.2.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:2.6.20.2}}
 BuildRequires:	rpmbuild(macros) >= 1.701
 BuildRequires:	sed >= 4.0
 Requires:	%{pname}-libs = %{epoch}:%{version}-%{rel}
 Requires:	xorg-xserver-server
-Requires:	xorg-xserver-server(videodrv-abi) <= 18.0
+Requires:	xorg-xserver-server(videodrv-abi) <= 19.0
 Requires:	xorg-xserver-server(videodrv-abi) >= 2.0
 Suggests:	kernel-video-firegl
 Provides:	xorg-driver-video
@@ -214,7 +214,7 @@ cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglr
 
 %prep
 %setup -q -c
-sh amd-catalyst-omega-%{version}-linux-run-installers.run --extract .
+sh ./AMD-Catalyst-%{version}-Linux-installer-%{intver}-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
 cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
@@ -230,8 +230,8 @@ EOF
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
-%patch9 -p2
+%patch8 -p2
+%patch9 -p1
 %patch10 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
@@ -372,7 +372,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/fglrx/libXvBAW.so.1
 %{_libdir}/fglrx/libAMDXvBA.cap
 %attr(755,root,root) %{_libdir}/fglrx/libamdocl*.so
-%attr(755,root,root) %{_libdir}/fglrx/libamdhsasc*.so
 %attr(755,root,root) %{_libdir}/fglrx/libatiadlxx.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticalcl.so
 %attr(755,root,root) %{_libdir}/fglrx/libaticaldd.so
