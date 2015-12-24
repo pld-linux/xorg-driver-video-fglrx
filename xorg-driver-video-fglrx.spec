@@ -31,7 +31,7 @@ exit 1
 %define		betaver		1.0
 #define		rel		0.beta%{betaver}.3
 
-%define		rel		1
+%define		rel		2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
