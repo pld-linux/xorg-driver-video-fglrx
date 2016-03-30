@@ -1,14 +1,14 @@
---- xorg-driver-video-fglrx-15.9/common/lib/modules/fglrx/build_mod/firegl_public.c~	2016-01-25 00:43:16.000000000 +0100
-+++ xorg-driver-video-fglrx-15.9/common/lib/modules/fglrx/build_mod/firegl_public.c	2016-01-25 00:45:05.769641394 +0100
-@@ -6504,7 +6504,11 @@
-        if (!(fpu->state->xsave.xsave_hdr.xstate_bv & XSTATE_FP))
+--- xorg-driver-video-radeon-crimson-15.12/common/lib/modules/fglrx/build_mod/firegl_public.c.b	2016-03-30 21:53:04.123817514 +0200
++++ xorg-driver-video-radeon-crimson-15.12/common/lib/modules/fglrx/build_mod/firegl_public.c	2016-03-30 21:54:42.922113915 +0200
+@@ -6452,7 +6452,11 @@
+       if (!(fpu->state->xsave.xsave_hdr.xstate_bv & XSTATE_FP))
  #else
-       _copy_xregs_to_kernel(&fpu->state.xsave);
+ 	  _copy_xregs_to_kernel(&fpu->state.xsave);
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(4,4,0)
        if (!(fpu->state.xsave.header.xfeatures & XSTATE_FP))
 +#else
 +      if (!(fpu->state.xsave.header.xfeatures & XFEATURE_MASK_FP))
 +#endif
  #endif
- 	return 1;
+          return 1;
     } else if (static_cpu_has(X86_FEATURE_FXSR)) {

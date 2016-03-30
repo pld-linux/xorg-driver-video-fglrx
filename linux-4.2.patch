@@ -1,25 +1,6 @@
 diff -ur xorg-driver-video-fglrx-15.9.orig/common/lib/modules/fglrx/build_mod/firegl_public.c xorg-driver-video-fglrx-15.9/common/lib/modules/fglrx/build_mod/firegl_public.c
 --- xorg-driver-video-fglrx-15.9.orig/common/lib/modules/fglrx/build_mod/firegl_public.c	2015-09-27 20:53:27.340395813 +0200
 +++ xorg-driver-video-fglrx-15.9/common/lib/modules/fglrx/build_mod/firegl_public.c	2015-09-27 20:54:13.834346677 +0200
-@@ -188,10 +188,18 @@
- #include <linux/string.h>
- #include <linux/gfp.h>
- #include <linux/swap.h>
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,2,0)
-+#include <asm/fpu/api.h>
-+#else
- #include "asm/i387.h"
-+#endif
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,4,0)
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,2,0)
-+#include <asm/fpu/internal.h>
-+#else
- #include <asm/fpu-internal.h>
- #endif
-+#endif
- 
- #include "firegl_public.h"
- #include "kcl_osconfig.h"
 @@ -620,8 +628,13 @@
  
      len = snprintf(buf, request, "%d\n", major);
@@ -44,19 +25,6 @@ diff -ur xorg-driver-video-fglrx-15.9.orig/common/lib/modules/fglrx/build_mod/fi
  static inline 
  unsigned long __fgl_cmpxchg(volatile void *ptr, unsigned long old,            
                          unsigned long new, int size)                      
-@@ -1739,7 +1755,11 @@
-          unsigned long new, int size)
- {
- #ifndef __HAVE_ARCH_CMPXCHG
--    return __fgl_cmpxchg(ptr,old,new,size);
-+#if defined(__i386__)
-+     return __fgl_cmpxchg(ptr,old,new,size);
-+#elif defined(__x86_64__)
-+    return cmpxchg((unsigned long*)ptr,old,new);
-+#endif
- #else
-     /* On kernel version 2.6.34 passing a variable or unsupported size
-      * argument to the __cmpxchg macro causes the default-clause of a
 @@ -6422,6 +6442,48 @@
      return i;
  }
@@ -106,111 +74,14 @@ diff -ur xorg-driver-video-fglrx-15.9.orig/common/lib/modules/fglrx/build_mod/fi
  /** \brief Generate UUID
   *  \param buf pointer to the generated UUID
   *  \return None
-@@ -6437,21 +6499,36 @@
-    struct fpu *fpu = &tsk->thread.fpu;
- 
-    if(static_cpu_has(X86_FEATURE_XSAVE)) {
--      fpu_xsave(fpu);
--      if (!(fpu->state->xsave.xsave_hdr.xstate_bv & XSTATE_FP))
--	 return 1;
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
-+       fpu_xsave(fpu);
-+       if (!(fpu->state->xsave.xsave_hdr.xstate_bv & XSTATE_FP))
-+#else
-+      _copy_xregs_to_kernel(&fpu->state.xsave);
-+      if (!(fpu->state.xsave.header.xfeatures & XSTATE_FP))
-+#endif
-+	return 1;
-    } else if (static_cpu_has(X86_FEATURE_FXSR)) {
--	 fpu_fxsave(fpu);
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
-+         fpu_fxsave(fpu);
-+#else
-+     copy_fxregs_to_kernel(fpu);
-+#endif
-    } else {
--	 asm volatile("fnsave %[fx]; fwait"
-+	asm volatile("fnsave %[fx]; fwait"
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
-                   : [fx] "=m" (fpu->state->fsave));
--	 return 0;
-+#else
-+                  : [fx] "=m" (fpu->state.fsave));
-+#endif
-+	return 0;
-    }
- 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
-    if (unlikely(fpu->state->fxsave.swd & X87_FSW_ES)) {
- 	asm volatile("fnclex");
- 	return 0;
-    }
-+#endif
-    return 1;
- }
- #endif
-@@ -6463,7 +6540,11 @@
- void ATI_API_CALL KCL_fpu_begin(void)
- {
- #ifdef CONFIG_X86_64
--    kernel_fpu_begin();
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
-+     kernel_fpu_begin();
-+#else
-+    __kernel_fpu_begin();
-+#endif
+--- a/common/lib/modules/fglrx/build_mod/firegl_public.c	2016-03-30 23:11:47.406938094 +0200
++++ b/common/lib/modules/fglrx/build_mod/firegl_public.c	2016-03-30 23:35:12.447181546 +0200
+@@ -6501,7 +6501,7 @@
+       fpu_xsave(fpu);
+       if (!(fpu->state->xsave.xsave_hdr.xstate_bv & XSTATE_FP))
  #else
- #ifdef TS_USEDFPU
-     struct thread_info *cur_thread = current_thread_info();
-@@ -6473,8 +6554,12 @@
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0)
-          KCL_fpu_save_init(cur_task);
- #else
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,2,0)
-+         copy_fpregs_to_fpstate(&cur_task->thread.fpu);
-+#else
-          __save_init_fpu(cur_task);
+-	  copy_xregs_to_kernel(&fpu->state.xsave);
++	  _copy_xregs_to_kernel(&fpu->state.xsave);
+       if (!(fpu->state.xsave.header.xfeatures & XSTATE_FP))
  #endif
-+#endif
-     else
-          clts();
- 
-@@ -6488,15 +6573,24 @@
-     /* The thread structure is changed with the commit below for kernel 3.3:
-      * https://github.com/torvalds/linux/commit/7e16838d94b566a17b65231073d179bc04d590c8
-      */
--    if (cur_task->thread.fpu.has_fpu)
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,2,0)
-+	if (cur_task->thread.fpu.fpregs_active)
-+#else
-+	if (cur_task->thread.fpu.has_fpu)
-+#endif
-+
- #else
-     if (cur_task->thread.has_fpu)
- #endif
- #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,15,0)
-         KCL_fpu_save_init(cur_task);
- #else
-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,2,0)
-+        copy_fpregs_to_fpstate(&cur_task->thread.fpu);
-+#else
-         __save_init_fpu(cur_task);
- #endif
-+#endif
-     else
-          clts();
- #endif
-@@ -6509,7 +6603,11 @@
-  */
- void ATI_API_CALL KCL_fpu_end(void)
- {
--    kernel_fpu_end();
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
-+     kernel_fpu_end();
-+#else
-+    __kernel_fpu_end();
-+#endif
- }
- 
- /** Create new directory entry under "/proc/...."
+          return 1;

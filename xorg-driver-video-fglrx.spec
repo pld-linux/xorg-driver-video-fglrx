@@ -27,26 +27,27 @@ exit 1
 %define		arch_dir	x86_64
 %endif
 
-%define		intver		15.201.1151
+%define		intver		15.302
+%define		sver		151217a-297685e
 %define		betaver		1.0
 #define		rel		0.beta%{betaver}.3
 
-%define		rel		3
+%define		rel		1
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	15.9
+Version:	15.12
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 Epoch:		1
 License:	AMD Binary (parts are GPL)
 Group:		X11
-# http://support.amd.com/ click through "download drivers", desktop -> radeon hd -> 7xxx -> linux
-#Source0:	http://www2.ati.com/drivers/linux/amd-catalyst-omega-%{version}-linux-run-installers.zip
-Source0:	amd-catalyst-%{version}-linux-installer-%{intver}-x86.x86_64.zip
-# Source0-md5:	d2de2df6946b452c266a3c892e6e46ff
+# http://support.amd.com/en-us/download/linux -> Linux
+# wget --referer=http://support.amd.com/ https://www2.ati.com/drivers/linux/radeon-crimson-15.12-15.302-151217a-297685e.zip
+#Source0:	https://www2.ati.com/drivers/linux/radeon-crimson-15.12-15.302-151217a-297685e.zip
+Source0:	radeon-crimson-%{version}-%{intver}-%{sver}.zip
+# Source0-md5:	39808c8a9bcc9041f1305e3531b60622
 %define		vver	%(echo %{version} | tr . -)
-#Source0:	amd-catalyst-%{vver}-linux-x86-x86-64.zip
 Source1:	atieventsd.init
 Source2:	atieventsd.sysconfig
 Source3:	gl.pc.in
@@ -61,8 +62,8 @@ Patch5:		%{pname}-GPL-only.patch
 Patch6:		%{pname}-intel_iommu.patch
 Patch7:		linux-3.18.18.patch
 Patch8:		linux-4.0.patch
-Patch9:		linux-4.1.patch
-Patch10:	linux-4.2.patch
+Patch9:		linux-4.2.patch
+Patch10:	linux-4.3.patch
 Patch11:	linux-4.4.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:2.6.20.2}}
@@ -90,15 +91,13 @@ BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
 %description
 AMD display driver which allows for hardware accelerated rendering
-with ATI Mobility, FireGL and Desktop GPUs. Some of the Desktop and
-Mobility GPUs supported are the Radeon HD 5xxx series to the
-Radeon HD 7xxx series.
+with Radeon R9 Fury, R9 300, R7 300, R9 200, R7 200, HD 7000, HD 6000,
+HD 5000, and ATI Mobility Radeon.
 
 %description -l pl.UTF-8
 Sterownik AMD umożliwiający sprzętowo akcelerowany rendering do kart
-graficznych ATI Mobility, FireGL i Desktopowych. Niektóre ze
-wspieranych Desktopowych i Mobilnych kart to Radeon HD 5xxx do
-Radeon HD 7xxx.
+graficznych Radeon R9 Fury, R9 300, R7 300, R9 200, R7 200, HD 7000, 
+HD 6000, HD 5000 oraz ATI Mobility Radeon.
 
 %package libs
 Summary:	OpenGL (GL and GLX) ATI/AMD libraries
@@ -215,7 +214,7 @@ cp -pf common/lib/modules/fglrx/build_mod/2.6.x/Makefile common/lib/modules/fglr
 
 %prep
 %setup -q -c
-sh ./AMD-Catalyst-%{version}-Linux-installer-%{intver}-x86.x86_64.run --extract .
+sh ./fglrx-%{intver}/amd-driver-installer-%{intver}-x86.x86_64.run --extract .
 
 cp -p arch/%{arch_dir}/lib/modules/fglrx/build_mod/* common/lib/modules/fglrx/
 cat >>common/lib/modules/fglrx/build_mod/2.6.x/Makefile <<EOF
