@@ -65,6 +65,7 @@ Patch8:		linux-4.0.patch
 Patch9:		linux-4.2.patch
 Patch10:	linux-4.3.patch
 Patch11:	linux-4.4.patch
+Patch12:	linux-4.5.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:2.6.20.2}}
 BuildRequires:	rpmbuild(macros) >= 1.701
@@ -234,6 +235,7 @@ EOF
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}
