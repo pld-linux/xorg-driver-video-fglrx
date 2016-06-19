@@ -32,7 +32,7 @@ exit 1
 %define		betaver		1.0
 #define		rel		0.beta%{betaver}.3
 
-%define		rel		1
+%define		rel		2
 %define		pname		xorg-driver-video-fglrx
 Summary:	Linux Drivers for AMD/ATI graphics accelerators
 Summary(pl.UTF-8):	Sterowniki do akceleratorów graficznych AMD/ATI
@@ -66,6 +66,7 @@ Patch9:		linux-4.2.patch
 Patch10:	linux-4.3.patch
 Patch11:	linux-4.4.patch
 Patch12:	linux-4.5.patch
+Patch13:	linux-4.6.patch
 URL:		http://ati.amd.com/support/drivers/linux/linux-radeon.html
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:2.6.20.2}}
 BuildRequires:	rpmbuild(macros) >= 1.701
@@ -236,6 +237,7 @@ EOF
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
+%patch13 -p1
 
 install -d common{%{_prefix}/{%{_lib},bin,sbin},/etc}
 cp -a %{x11ver}%{arch_sufix}/usr/X11R6/%{_lib}/* common%{_libdir}

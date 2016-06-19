@@ -1,0 +1,38 @@
+--- xorg-driver-video-fglrx-15.12/common/lib/modules/fglrx/build_mod/firegl_public.c.orig	2016-06-19 18:04:29.731479926 +0200
++++ xorg-driver-video-fglrx-15.12/common/lib/modules/fglrx/build_mod/firegl_public.c	2016-06-19 18:11:14.236335016 +0200
+@@ -3228,7 +3228,11 @@
+     int ret;
+ 
+     down_read(&current->mm->mmap_sem);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,6,0)
++    ret = get_user_pages(vaddr, page_cnt, 1, 0, (struct page **)page_list, NULL);
++#else
+     ret = get_user_pages(current, current->mm, vaddr, page_cnt, 1, 0, (struct page **)page_list, NULL);
++#endif
+     up_read(&current->mm->mmap_sem);
+ 
+     return ret;
+@@ -3246,7 +3250,11 @@
+     int ret;
+ 
+     down_read(&current->mm->mmap_sem);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,6,0)
++    ret = get_user_pages(vaddr, page_cnt, 0, 0, (struct page **)page_list, NULL);
++#else
+     ret = get_user_pages(current, current->mm, vaddr, page_cnt, 0, 0, (struct page **)page_list, NULL);
++#endif
+     up_read(&current->mm->mmap_sem);
+ 
+     return ret;
+@@ -3257,7 +3265,11 @@
+     unsigned int i;
+     for (i=0; i<page_cnt; i++)
+     {
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 6, 0))
++	put_page((struct page*)page_list[i]);
++#else
+         page_cache_release((struct page*)page_list[i]);
++#endif
+     }
+ }
+ 
