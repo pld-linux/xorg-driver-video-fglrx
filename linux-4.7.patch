@@ -1,0 +1,22 @@
+--- xorg-driver-video-fglrx-15.12/common/lib/modules/fglrx/build_mod/firegl_public.h~	2015-12-18 19:47:41.000000000 +0100
++++ xorg-driver-video-fglrx-15.12/common/lib/modules/fglrx/build_mod/firegl_public.h	2016-08-02 07:38:26.487200932 +0200
+@@ -647,11 +647,19 @@
+ #endif
+ 
+ #ifndef cpu_has_pat
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,7,0)
+ #define cpu_has_pat  test_bit(X86_FEATURE_PAT, (void *) &boot_cpu_data.x86_capability)
++#else
++#define cpu_has_pat boot_cpu_has(X86_FEATURE_PAT)
++#endif
+ #endif
+ 
+ #ifndef cpu_has_pge
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,7,0)
+ #define cpu_has_pge test_bit(X86_FEATURE_PGE, &boot_cpu_data.x86_capability)
++#else
++#define cpu_has_pge boot_cpu_has(X86_FEATURE_PGE)
++#endif
+ #endif
+ 
+ /* 2.6.29 defines pgprot_writecombine as a macro which resolves to a
